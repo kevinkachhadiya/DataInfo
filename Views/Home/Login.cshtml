@@ -1,0 +1,634 @@
+﻿
+@{
+    ViewBag.Title = "Login";
+}
+
+<div class="login-container">
+    <form class="login-form">
+        <div class="form-group">
+            <input type="text" onkeyup="UserName(this)" style="max-width:100%" required>
+            <label class="label1" id="uname">Username</label>
+        </div>
+        <div class="form-group">
+            <input type="password"  onkeyup="PassWord(this)" style="max-width:100%" required>
+            <label class="label1" id="pwd">Password</label>
+        </div>
+        <button type="submit" id="button1">Login</button>
+    </form>
+</div>
+
+<div class="">
+    <form class="register-form">
+
+        <div class="form-group" style="align-items:center">
+            <label  class="label2" style=" top: -8px; left: 133px;">Profile Image</label>
+            <img id="imagePreview" src="" alt="Image Preview" style="display: block; max-width: 250px; margin-top: 10px;">
+        </div>
+
+        <div class="form-group" >
+            <input type="text" id="fname_" style="max-width:100%" readonly>
+            <label class="label2" id="fname" >First Name</label>
+        </div>
+        <div class="form-group">
+            <input type="text" id="lname_" style="max-width:100%" readonly>
+            <label class="label2" id="lname"  >Last Name</label>
+        </div>
+        <div class="form-group">
+            <input type="email" id="email_" style="max-width:100%" readonly>
+            <label class="label2" id="email" >Email</label>
+        </div>
+
+        <div class="form-group">
+            <input type="tel" id="mobile_"  style="max-width:100%" readonly>
+            <label class="label2" id="mobile"  >Mobile No</label>
+        </div>
+        <div class="form-group">
+            <input type="text" id="addr_" style="max-width:100%" readonly>
+            <label class="label2" id="addr"  >Address</label>
+        </div>
+        <div class="form-group">
+            <input type="date" id="dob_" style="max-width:100%"  readonly>
+            <label class="label2" id="dob"   >Date of Birth</label>
+        </div>
+        <div class="form-group">
+            <input type="text" id="Country_" style="max-width:100%" readonly>
+            <label class="label2" id="Country"  > Country</label>
+        </div>
+        <div class="form-group">
+            <input type="text" id="State_" style="max-width:100%" readonly>
+            <label class="label2" id="State"  >State</label>
+        </div>
+        <div class="form-group">
+            <input type="text" id="City_" style="max-width:100%" readonly>
+            <label class="label2" id="City" >City</label>
+        </div>
+
+
+        <button type="submit" id="button2">Reset</button>
+
+    </form>
+</div>
+
+<style>
+
+body {
+    background: linear-gradient(135deg, #e9ecef, #dee2e6);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0; /* Ensure no default margin */
+    min-height: 100vh; /* Full viewport height */
+}
+
+/* Container Styling */
+.login-container, .register-form {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 1rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
+    width: 100%;
+    max-width: 450px;
+    margin: 1rem auto;
+    transition: all 0.4s ease;
+    /* Scroll-driven animation */
+    animation: slideUp 0.8s ease-out;
+    animation-timeline: scroll();
+    animation-range: 0 150px;
+}
+
+.login-container.hidden {
+    opacity: 0;
+    transform: scale(0.95);
+}
+
+/* Form Styling */
+.login-form, .register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Form Group */
+.form-group {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* Inputs */
+input {
+    width: 100%;
+    padding: 12px 10px;
+    border: none;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.3);
+    background: transparent;
+    font-size: 1rem;
+    color: #333;
+    transition: border-bottom 0.3s ease, box-shadow 0.3s ease;
+    will-change: transform, border-bottom; /* Optimize for animation */
+}
+
+input:focus {
+    outline: none;
+    border-bottom: 2px solid #007bff;
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2);
+    animation: glow 0.6s ease-in-out infinite alternate; /* Latest glow effect */
+}
+
+input::placeholder {
+    color: transparent;
+}
+
+input[readonly] {
+    background: rgba(240, 240, 240, 0.4);
+    cursor: not-allowed;
+    color: #666;
+}
+
+/* Labels */
+.label1, .label2 {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    font-size: 1rem;
+    color: rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+input:focus ~ .label1, input:not(:placeholder-shown) ~ .label1,
+input:focus ~ .label2, input:not(:placeholder-shown) ~ .label2 {
+    top: -8px;
+    left: 0;
+    font-size: 0.85rem;
+    color: #007bff;
+    animation: labelPop 0.2s ease-out; /* Subtle pop effect */
+}
+
+/* Specific Label Adjustments */
+.label2[for="imageUpload"] {
+    position: static;
+    transform: none;
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* Error */
+.error {
+    color: orangered;
+    font-size: 0.8rem;
+    max-width: 100%;
+    white-space: normal;
+}
+
+/* Buttons */
+#button1, #button2 {
+    padding: 12px;
+    background: #007bff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    transition: background 0.3s ease, transform 0.2s ease;
+    width: 100%;
+    will-change: transform; /* Optimize hover animation */
+}
+
+#button1:hover, #button2:hover {
+    background: #0056d2;
+    transform: translateY(-2px) scale(1.02); /* Enhanced hover */
+    animation: buttonPulse 0.4s ease; /* Subtle pulse */
+}
+
+/* Image Preview */
+#imagePreview {
+    display: block;
+    max-width: 200px;
+    margin: 10px auto 0;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.3s ease;
+}
+
+/* Show image with animation when loaded */
+#imagePreview[src]:not([src=""]) {
+    opacity: 1;
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Dark Mode */
+.dark body {
+    background: linear-gradient(135deg, #343a40, #495057);
+}
+
+.dark .login-container, .dark .register-form {
+    background: rgba(0, 0, 0, 0.25);
+    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.05);
+}
+
+.dark input {
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    color: #e9ecef;
+}
+
+.dark input:focus {
+    border-bottom: 2px solid #66b0ff;
+    box-shadow: 0 2px 8px rgba(102, 176, 255, 0.2);
+    animation: glowDark 0.6s ease-in-out infinite alternate;
+}
+
+.dark input[readonly] {
+    background: rgba(80, 80, 80, 0.4);
+    color: #adb5bd;
+}
+
+.dark .label1, .dark .label2 {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.dark input:focus ~ .label1, .dark input:not(:placeholder-shown) ~ .label1,
+.dark input:focus ~ .label2, .dark input:not(:placeholder-shown) ~ .label2 {
+    color: #66b0ff;
+}
+
+.dark .label2[for="imageUpload"] {
+    color: #e9ecef;
+}
+
+.dark #button1, .dark #button2 {
+    background: #66b0ff;
+}
+
+.dark #button1:hover, .dark #button2:hover {
+    background: #4d94ff;
+}
+
+/* Keyframes for Animations */
+@@keyframes slideUp {
+    from { opacity: 1; transform: translateY(50px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@@keyframes glow {
+    from { box-shadow: 0 0 5px rgba(0, 123, 255, 0.3); }
+    to { box-shadow: 0 0 12px rgba(0, 123, 255, 0.6); }
+}
+
+@@keyframes glowDark {
+    from { box-shadow: 0 0 5px rgba(102, 176, 255, 0.3); }
+    to { box-shadow: 0 0 12px rgba(102, 176, 255, 0.6); }
+}
+
+@@keyframes labelPop {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+    100% { transform: translateY(-8px); }
+}
+
+@@keyframes buttonPulse {
+    0% { transform: translateY(-2px) scale(1.02); }
+    50% { transform: translateY(-2px) scale(1.05); }
+    100% { transform: translateY(-2px) scale(1.02); }
+}
+
+@@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@@media (max-width: 768px) {
+    .login-container, .register-form {
+        padding: 1.5rem;
+        max-width: 380px;
+    }
+    input {
+        font-size: 0.95rem;
+    }
+    .label1, .label2 {
+        font-size: 0.9rem;
+    }
+    #button1, #button2 {
+        font-size: 0.95rem;
+    }
+    #imagePreview {
+        max-width: 150px;
+    }
+}
+
+@@media (max-width: 480px) {
+    .login-container, .register-form {
+        padding: 1rem;
+        max-width: 320px;
+    }
+    input {
+        font-size: 0.9rem;
+        padding: 10px 8px;
+    }
+    .label1, .label2 {
+        font-size: 0.85rem;
+    }
+    input:focus ~ .label1, input:not(:placeholder-shown) ~ .label1,
+    input:focus ~ .label2, input:not(:placeholder-shown) ~ .label2 {
+        font-size: 0.75rem;
+    }
+    #button1, #button2 {
+        font-size: 0.9rem;
+        padding: 10px;
+    }
+    #imagePreview {
+        max-width: 120px;
+    }
+}
+</style>
+
+<script>
+    $(document).ready(function () {
+
+        var jwtToken = localStorage.getItem('AuthToken');
+
+        $.ajax({
+            url: '@Url.Action("validtoken", "Home")',
+            type: 'POST',
+            data: {Token:jwtToken },
+            success: function (response) {
+
+                if (response.success) {
+
+                    const loginContainer = document.querySelector('.login-container');
+                    loginContainer.classList.add('hidden');
+
+                    $(".register-form").css("display", "");
+                    loginContainer.style.display = 'none';
+
+                    $.ajax({
+
+                        url: '@Url.Action("GetDetailsFromToken","Home")',
+                        type: 'GET',
+                        data: { Token: jwtToken },
+                        success: function (response) {
+                            if (response.success)
+                            {
+                                $("#imagePreview").attr("src", "/Uploads/" + response.message.ImagePath);
+                                    $("#fname_").val(response.message.FirstName);
+                                    $("#lname_").val(response.message.LastName);
+                                    $("#email_").val(response.message.Email);
+                                  
+                                    $("#mobile_").val(response.message.MobileNo);
+                                    $("#addr_").val(response.message.Address);
+                                    $("#dob_").val(response.message.Dob);
+                                    $("#Country_").val(response.message.SelectedCountry);
+                                    $("#State_").val(response.message.selectedState);
+                                   $("#City_").val(response.message.selectedCity);
+
+                                }
+
+
+                            }
+                        
+                    });
+
+                }
+                else
+                {
+                    $(".register-form").css("display", "none");
+
+                    localStorage.setItem('AuthToken', "");
+
+                   
+                }
+
+            }
+
+        });
+
+       
+    });
+
+    $(document).ready(function () {
+
+
+        document.body.appendChild(globalAlertContainer);
+
+
+        
+
+        $(".register-form").on("submit", function (event) {
+
+            event.preventDefault();
+
+            localStorage.setItem("AuthToken", "")
+
+            showAlert("Token is removed from Local storage", "danger", 1900);
+
+            setTimeout(() => { window.location.reload() }, 1900);
+
+
+        });
+
+        $(".login-form").on("submit", function (event) {
+            event.preventDefault(); // Prevents the form from submitting (optional, for testing)
+            const username = $('input[type="text"]').val();
+            const password = $('input[type="password"]').val()
+
+
+            const formData = {
+                Email: username,
+                ConfirmPassword: password
+            };
+
+
+            $.ajax({
+                url: '@Url.Action("UserLogin", "Home")',
+                type: 'POST',
+                data: JSON.stringify(formData),
+                contentType: "application/json",
+                dataType: "json",
+
+                success: function (response) {
+
+                    if (response.success) {
+
+                        localStorage.setItem('AuthToken', response.message);
+
+                        const loginContainer = document.querySelector('.login-container');
+                        loginContainer.classList.add('hidden');
+                        showAlert("Successfully Loged", "success", 1900);
+
+
+                        setTimeout(() => {
+                            loginContainer.style.display = 'none';
+                            $(".register-form").css("display", "");
+                            window.location.reload();
+                        }, 1900);
+
+                       
+                    }
+                    else {
+             
+                        showAlert('Login failed: Invalid Id or Password' ); // Handle failure
+                        $(".register-form").css("display", "none");
+                       
+                    }
+
+
+                }
+
+            });
+        });
+    });
+
+   function UserName(input) {
+    const $input = $(input);
+    const value = $input.val();
+    const $errorSpan = $("#uname");
+    const emailPattern = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+
+
+       $errorSpan.css("color","red")
+
+    if (!value) {
+        $errorSpan.text("Email is required").addClass("error"); // Error state
+        input.setCustomValidity("Email is required");
+        $errorSpan.css("top", "");
+    } else if (value.length < 5) {
+        $errorSpan.text("Email must be at least 5 characters").addClass("error");
+        input.setCustomValidity("Email must be at least 5 characters");
+    } else if (!emailPattern.test(value)) {
+        $errorSpan.text("Email Invalid Format").addClass("error");
+        input.setCustomValidity("Invalid Format");
+    } else {
+        $errorSpan.text("Username").removeClass("error"); // Valid state
+        input.setCustomValidity("");
+        $errorSpan.css("color", "")
+    }
+    }
+
+    function PassWord(input)
+    {
+        const $input = $(input);
+        const value = $input.val();
+        $errorSpan = $("#pwd");
+        letterPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@@#$%^&*])[A-Za-z\d!@@#$%^&*]{8,}$/;
+        $errorSpan.css("color", "red")
+
+        if (!value) {
+            $errorSpan.text("Password is required").addClass("error");
+            input.setCustomValidity("Password is required");
+            $errorSpan.css("top", "");
+        } else if (value.length < 6) {
+            $errorSpan.text("Password must be at least 6 characters").addClass("error");
+            input.setCustomValidity("Password must be at least 6 characters");
+        } else if (!letterPattern.test(value)) {
+            $errorSpan.text("Password : 8+, 1A, 1a, 1#, 1!@@#$%").addClass("error");
+            input.setCustomValidity("Password: 8+ chars, 1 upper, 1 lower, 1 digit, 1 special (!@@#$%^&*)");
+        } else {
+            $errorSpan.text("Password").removeClass("error");
+            input.setCustomValidity("");
+            $errorSpan.css("color", "")
+        }
+
+    }
+
+    // Create the global alert container
+    var globalAlertContainer = document.createElement("div");
+    globalAlertContainer.id = "globalAlertContainer";
+    globalAlertContainer.style.position = "fixed";
+    globalAlertContainer.style.top = "20px"; // Increased top margin to avoid toolbar
+    globalAlertContainer.style.left = "50%";
+    globalAlertContainer.style.transform = "translateX(-50%)";
+    globalAlertContainer.style.zIndex = "1100"; // Ensure it's above the modal and toolbar
+    globalAlertContainer.style.width = "400px";
+    globalAlertContainer.style.maxWidth = "90%";
+    globalAlertContainer.style.display = "flex";
+    globalAlertContainer.style.flexDirection = "column";
+    globalAlertContainer.style.alignItems = "center";
+    // Append to the body
+
+    function customAlert(message, delayInSeconds) {
+        setTimeout(() => {
+            alert(message);
+        }, delayInSeconds * 1000);
+    }
+
+    function showAlert(message, type = "danger", duration = 3000) {
+        const alertDiv = document.createElement("div");
+        alertDiv.classList.add("alert", `alert-${type}`, "shadow-lg", "p-3", "rounded", "animated-alert");
+        alertDiv.style.position = "relative";
+        alertDiv.style.marginBottom = "10px";
+        alertDiv.style.opacity = "0";
+        alertDiv.style.transform = "scale(0.9)";
+        alertDiv.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+        alertDiv.style.width = "100%";
+        alertDiv.style.maxWidth = "400px";
+        alertDiv.style.boxShadow = "0px 4px 10px rgba(0, 0, 0, 0.1)";
+        alertDiv.style.borderLeft = `5px solid ${type === "danger" ? "#dc3545" : type === "warning" ? "#ffc107" : "#28a745"}`;
+        alertDiv.style.backgroundColor = "#ffffff"; // Explicit background color
+        alertDiv.style.color = "#000000"; // Explicit text color for better contrast
+
+        // Progress bar for auto-hide timer
+        const progressBar = document.createElement("div");
+        progressBar.style.height = "3px";
+        progressBar.style.width = "100%";
+        progressBar.style.position = "absolute";
+        progressBar.style.bottom = "0";
+        progressBar.style.left = "0";
+        progressBar.style.backgroundColor = type === "danger" ? "#dc3545" : type === "warning" ? "#ffc107" : "#28a745";
+        progressBar.style.transition = `width ${duration}ms linear`;
+
+        alertDiv.innerHTML = `
+        <div class="d-flex justify-content-between align-items-center">
+            <span class="fw-semibold">${message}</span>
+            <button type="button" class="btn-close" aria-label="Close"></button>
+        </div>
+    `;
+
+        alertDiv.appendChild(progressBar);
+        globalAlertContainer.appendChild(alertDiv);
+
+        // Show the alert with animation
+        setTimeout(() => {
+            alertDiv.style.opacity = "1";
+            alertDiv.style.transform = "scale(1)";
+            progressBar.style.width = "0"; // Progress bar animation
+        }, 100);
+
+        // Auto-hide after specified duration
+        setTimeout(() => {
+            alertDiv.style.opacity = "0";
+            alertDiv.style.transform = "scale(0.9)";
+            setTimeout(() => alertDiv.remove(), 500);
+        }, duration);
+
+        // Close button event
+        alertDiv.querySelector(".btn-close").addEventListener("click", function () {
+            alertDiv.style.opacity = "0";
+            alertDiv.style.transform = "scale(0.9)";
+            setTimeout(() => alertDiv.remove(), 500);
+        });
+    }
+
+    function showCustomConfirm(userId, callback) {
+
+        document.getElementById("userIdPlaceholder").textContent = userId;
+
+
+        const confirmModal = new bootstrap.Modal(document.getElementById("confirmModal"));
+        confirmModal.show();
+
+        document.getElementById("confirmDelete").onclick = function () {
+            confirmModal.hide(); // Hide the modal
+            callback(true); // User confirmed
+        };
+
+        // Handle the "Cancel" button click or modal close
+        document.getElementById("confirmModal").addEventListener("hidden.bs.modal", function () {
+            callback(false); // User canceled
+        });
+    }
+
+</script>
