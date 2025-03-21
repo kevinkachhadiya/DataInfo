@@ -8,16 +8,23 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddHttpClient();
 
+// Configure DbContext with connection string from environment variable
+var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL") ??
+                       builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(connectionString));
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
+{
+    // Development-specific settings
+}
+else
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -40,5 +47,6 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Login}/{id?}")
     .WithStaticAssets();
 
-
-app.Run();
+// Bind to the port provided by Render
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080"; // Default to 8080 if PORT is not set
+app.Run($"http://0.0.0.0:{port}");
