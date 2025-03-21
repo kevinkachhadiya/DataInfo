@@ -13,6 +13,7 @@ namespace DataInfo.Controllers
     using System.Text.Json;
     using Microsoft.Extensions.Hosting;
     using System.Diagnostics;
+    using Microsoft.Extensions.Configuration;
 
     namespace YourNamespace.Controllers
     {
@@ -22,12 +23,15 @@ namespace DataInfo.Controllers
             private readonly ApplicationDbContext _applicationDbContext;
             private readonly IWebHostEnvironment _env;
             private readonly HttpClient _httpClient;
+            private readonly string _apiBaseUrl;
 
-            public HomeController(ApplicationDbContext applicationDbContext, IWebHostEnvironment env, IHttpClientFactory httpClientFactory)
+            public HomeController(ApplicationDbContext applicationDbContext, IWebHostEnvironment env, IConfiguration configuration, IHttpClientFactory httpClientFactory)
             {
                 _applicationDbContext = applicationDbContext;
                 _env = env;
                 _httpClient = httpClientFactory.CreateClient();
+                _apiBaseUrl = configuration.GetValue<string>("ApiSettings:BaseUrl")
+            ?? throw new InvalidOperationException("API base URL is not configured.");
             }
 
             [HttpPost]
@@ -47,7 +51,7 @@ namespace DataInfo.Controllers
                         ? $"&order[0].column={order.Column}&order[0].dir={Uri.EscapeDataString(order.Dir)}"
                         : "";
 
-                    var url = $"https://localhost:44367/api/Home/GetAll?draw={dataTableRequest.Draw}&start={dataTableRequest.Start}&length={dataTableRequest.Length}{searchQuery}{orderQuery}";
+                    var url = $"{_apiBaseUrl}/api/Home/GetAll?draw={dataTableRequest.Draw}&start={dataTableRequest.Start}&length={dataTableRequest.Length}{searchQuery}{orderQuery}";
 
                     HttpResponseMessage response = await _httpClient.GetAsync(url);
                     response.EnsureSuccessStatusCode();
@@ -130,7 +134,7 @@ namespace DataInfo.Controllers
                             string json = JsonSerializer.Serialize(user);
                             HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                            HttpResponseMessage response = await _httpClient.PostAsync("https://localhost:44367/api/Home/CreateUser", content);
+                            HttpResponseMessage response = await _httpClient.PostAsync($"{_apiBaseUrl}/api/Home/CreateUser", content);
                             string jsonResponse = await response.Content.ReadAsStringAsync();
 
                             Debug.WriteLine(jsonResponse);
@@ -190,7 +194,7 @@ namespace DataInfo.Controllers
             {
                 try
                 {
-                    var url = $"https://localhost:44367/api/Home/DeleteUser/{id}";
+                    var url = $"{_apiBaseUrl}/api/Home/DeleteUser/{id}";
                     HttpResponseMessage response = await _httpClient.DeleteAsync(url);
                     response.EnsureSuccessStatusCode();
                     var message = await response.Content.ReadAsStringAsync();
@@ -272,7 +276,7 @@ namespace DataInfo.Controllers
                     string jsonPayload = JsonSerializer.Serialize(editUser);
                     var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
 
-                    HttpResponseMessage response = await _httpClient.PutAsync("https://localhost:44367/api/Home/EditUser", content);
+                    HttpResponseMessage response = await _httpClient.PutAsync($"{_apiBaseUrl}/api/Home/EditUser", content);
                     string responseMessage = await response.Content.ReadAsStringAsync();
 
                     if (response.IsSuccessStatusCode)
@@ -353,7 +357,7 @@ namespace DataInfo.Controllers
             {
                 try
                 {
-                    HttpResponseMessage message = await _httpClient.GetAsync($"https://localhost:44367/api/Home/GetbyId/{id}");
+                    HttpResponseMessage message = await _httpClient.GetAsync($"{_apiBaseUrl}/api/Home/GetbyId/{id}");
                     string jsonResponse = await message.Content.ReadAsStringAsync();
 
                     var result = JsonSerializer.Deserialize<UserData>(jsonResponse, new JsonSerializerOptions
@@ -399,7 +403,7 @@ namespace DataInfo.Controllers
             {
                 try
                 {
-                    var url = $"https://localhost:44367/api/Home/GetbyId/{id}";
+                    var url = $"{_apiBaseUrl}/api/Home/GetbyId/{id}";
                     HttpResponseMessage response = await _httpClient.GetAsync(url);
                     response.EnsureSuccessStatusCode();
 

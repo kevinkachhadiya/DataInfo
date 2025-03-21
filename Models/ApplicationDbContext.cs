@@ -21,7 +21,11 @@ namespace DataInfo.Models
 
         public DbSet<Login> usetlogin { get; set; }
 
-   
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
 
     }
 }
