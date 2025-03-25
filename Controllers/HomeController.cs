@@ -350,7 +350,7 @@ namespace DataInfo.Controllers
                         StatusCode = 500
                     };
                 }
-            }
+            
             }
 
             [HttpGet]
