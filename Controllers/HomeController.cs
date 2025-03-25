@@ -1115,7 +1115,7 @@ namespace DataInfo.Controllers
                     string json = JsonSerializer.Serialize(login);
                     HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                    HttpResponseMessage response = await _httpClient.PostAsync("https://localhost:44367/api/Auth/Login", content);
+                    HttpResponseMessage response = await _httpClient.PostAsync($"{_apiBaseUrl}/api/Auth/Login", content);
                     string responseMessage = await response.Content.ReadAsStringAsync();
 
 
@@ -1169,7 +1169,7 @@ namespace DataInfo.Controllers
                     string json = JsonSerializer.Serialize(token);
                     HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                    HttpResponseMessage response = await _httpClient.PostAsync("https://localhost:44367/api/Auth/validate-token", content);
+                    HttpResponseMessage response = await _httpClient.PostAsync($"{_apiBaseUrl}/api/Auth/validate-token", content);
 
                     string responsemessage = await response.Content.ReadAsStringAsync();
 
