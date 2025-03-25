@@ -69,7 +69,8 @@
                         <!-- First Name -->
                         <div class="row mb-3 mt-3">
                             <div class="col-4 col-md-3">
-                                @Html.LabelFor(model => item.FirstName, new { @class = "control-label", style = "vertical-align: sub;" })
+                                <label class="control-label" style="vertical-align: sub;">First Name</label>
+                         
                             </div>
                            
                             <div class="col-8 col-md-8">
@@ -90,7 +91,7 @@
                         <!-- Last Name -->
                         <div class="row mb-3">
                             <div class="col-4 col-md-3 ">
-                                @Html.LabelFor(model => item.LastName, new { @class = "control-label", style = "vertical-align: sub;" })
+                                <label class="control-label" style="vertical-align: sub;">Last Name</label>
                             </div>
                             <div class="col-8 col-md-8">
                                 <span class="text-danger" id="LastNameError" style="display:none"></span>
@@ -109,7 +110,7 @@
                         <!-- Email -->
                         <div class="row mb-3">
                             <div class="col-4 col-md-3">
-                                @Html.LabelFor(model => item.Email, new { @class = "control-label", style = "vertical-align: sub;" })
+                                <label class="control-label" style="vertical-align: sub;">Email</label>
                             </div>
                             <div class="col-8 col-md-8">
                                 <span class="text-danger" id="Email_" style="display:none"></span>
@@ -128,7 +129,8 @@
                         <!-- Mobile No -->
                         <div class="row mb-3">
                             <div class="col-4 col-md-3 " >
-                                @Html.LabelFor(model => item.MobileNo, new { @class = "control-label", style = "vertical-align: sub;" })
+                                <label class="control-label" style="vertical-align: sub;">Mobile No</label>
+                         
                             </div>
                             <div class="col-2 col-md-1 ">
                                 <span class="text-success" style="vertical-align: sub;">+91</span>
@@ -151,9 +153,9 @@
                         <!-- Gender -->
                         <div class="row mb-3">
                             <div class="col-4 col-md-3 d-flex align-items-center">
-                                @Html.LabelFor(model => item.Gender1, new { @class = "control-label", id = "gender_",style = "vertical-align: sub;" })
+                                <label class="control-label" style="vertical-align: sub;">Gender</label>
                             </div>
-                            <div class="col-8 col-md-8 d-flex">
+                            <div class="col-8 col-md-8  align-items-center ">
                                 @foreach (var gender in Enum.GetValues(typeof(DataInfo.Models.Gender)))
                                 {
                                     <div class="form-check me-2">
@@ -167,7 +169,7 @@
                         <!-- Date of Birth -->
                         <div class="row mb-3">
                             <div class="col-4 col-md-3 " style="vertical-align: sub;">
-                                Dob :
+                                Dob
                             </div>
                             <div class="col-8 col-md-8">
                                 <span class="text-danger" id="Date" style="display:none"></span>
@@ -187,7 +189,7 @@
                         <!-- Password -->
                         <div class="row mb-3">
                             <div class="col-4 col-md-3 ">
-                                @Html.LabelFor(model => item.Password, new { @class = "control-label", style = "vertical-align: sub;" })
+                                <label class="control-label" style="vertical-align: sub;">Password</label>
                             </div>
                             <div class="col-8 col-md-8 ">
                                 <span class="text-danger" id="PassWord_" style="display:none"></span>
@@ -223,7 +225,7 @@
                         <!-- Address -->
                         <div class="row mb-3">
                             <div class="col-4 col-md-3 ">
-                                @Html.LabelFor(model => item.Address, new { @class = "control-label", style = "vertical-align: sub;" })
+                                <label class="control-label" style="vertical-align: sub;">Address</label>
                             </div>
                             <div class="col-8 col-md-8 ">
                                 <span class="text-danger" id="Address_" style="display:none"></span>
@@ -367,7 +369,7 @@
                             <div class="col-4 col-md-3 d-flex align-items-center">
                                 <label class="control-label" style="vertical-align: sub;">Gender:</label>
                             </div>
-                            <div class="col-8 col-md-8 d-flex">
+                            <div class="col-8 col-md-8">
                                 @foreach (var gender in Enum.GetValues(typeof(DataInfo.Models.Gender)))
                                 {
                                     <div class="form-check me-2">
@@ -468,13 +470,13 @@
 
                         <hr />
                         <!-- Buttons -->
-                        <div class="row mb-3">
+                        <div class="row mb-3 d-flex">
                             <div class="col-5 col-md-3">
-                                @Html.ActionLink("Back to List", "ViewUser")
+                                <a href="/Home/ViewUser">Back to List</a>
                             </div>
-                            <div class="col-7 col-md-8 text-end">
-                                <button type="submit" class="btn btn-primary col-7">Save Changes</button>
-                                <button type="button" class="btn btn-secondary col-5" data-bs-dismiss="modal">Close</button>
+                            <div class="col-7 col-md-8 text-end d-flex justify-content-end gap-2">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             </div>
                         </div>
                     </div>
