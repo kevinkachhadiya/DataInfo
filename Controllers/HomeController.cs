@@ -577,7 +577,7 @@ namespace DataInfo.Controllers
                     int draw = dataTableRequest.Draw;
                     int start = dataTableRequest.Start;
                     int length = dataTableRequest.Length;
-                    string searchValue = dataTableRequest.Search?.Value?.ToLower();
+                    string searchValue = dataTableRequest.Search?.Value?.ToLower() ?? "";
 
                     // Start with the Users query
                     var query = _applicationDbContext.Users
@@ -700,6 +700,8 @@ namespace DataInfo.Controllers
                 catch (Exception ex)
                 {
                     string errorJson = JsonSerializer.Serialize(new { error = ex.Message });
+
+                    Debug.WriteLine(errorJson);
                     return new ContentResult
                     {
                         Content = errorJson,
@@ -1106,6 +1108,8 @@ namespace DataInfo.Controllers
             [HttpPost]
             public async Task<IActionResult> UserLogin([FromBody] Login login)
             {
+
+
                 try
                 {
                     string json = JsonSerializer.Serialize(login);
@@ -1114,19 +1118,34 @@ namespace DataInfo.Controllers
                     HttpResponseMessage response = await _httpClient.PostAsync("https://localhost:44367/api/Auth/Login", content);
                     string responseMessage = await response.Content.ReadAsStringAsync();
 
-                    var jsonDoc = JsonDocument.Parse(responseMessage);
-                    string token = jsonDoc.RootElement.GetProperty("token").GetString();
 
-                    Debug.WriteLine(token);
                     Debug.WriteLine(responseMessage);
-
-                    string successJson = JsonSerializer.Serialize(new { success = true, message = token });
-                    return new ContentResult
+                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
-                        Content = successJson,
-                        ContentType = "application/json",
-                        StatusCode = 200
-                    };
+
+                        string token = JsonDocument.Parse(responseMessage).RootElement.GetProperty("token").GetString() ?? "N/A";
+
+                        string successJson = JsonSerializer.Serialize(new { success = true, message = token });
+                        return new ContentResult
+                        {
+                            Content = successJson,
+                            ContentType = "application/json",
+                            StatusCode = 200
+                        };
+
+                    }
+                    else 
+                    {
+                        string successJson = JsonSerializer.Serialize(new { success = false, message = responseMessage });
+                        return new ContentResult
+                        {
+                            Content = successJson,
+                            ContentType = "application/json",
+                            StatusCode = 200
+                        };
+
+                    }
+                   
                 }
                 catch (Exception e)
                 {
