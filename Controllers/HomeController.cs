@@ -14,6 +14,8 @@ namespace DataInfo.Controllers
     using Microsoft.Extensions.Hosting;
     using System.Diagnostics;
     using Microsoft.Extensions.Configuration;
+    using Supabase.Interfaces;
+    using Supabase.Gotrue;
 
     namespace YourNamespace.Controllers
     {
@@ -24,14 +26,18 @@ namespace DataInfo.Controllers
             private readonly IWebHostEnvironment _env;
             private readonly HttpClient _httpClient;
             private readonly string _apiBaseUrl;
+            private readonly Supabase.Client _supabaseClient;
 
-            public HomeController(ApplicationDbContext applicationDbContext, IWebHostEnvironment env, IConfiguration configuration, IHttpClientFactory httpClientFactory)
+
+
+            public HomeController(ApplicationDbContext applicationDbContext, IWebHostEnvironment env, IConfiguration configuration, IHttpClientFactory httpClientFactory, Supabase.Client supabaseClient)
             {
                 _applicationDbContext = applicationDbContext;
                 _env = env;
                 _httpClient = httpClientFactory.CreateClient();
                 _apiBaseUrl = configuration.GetValue<string>("ApiSettings:BaseUrl")
             ?? throw new InvalidOperationException("API base URL is not configured.");
+                _supabaseClient = supabaseClient;
             }
 
             [HttpPost]
@@ -97,29 +103,39 @@ namespace DataInfo.Controllers
             {
                 try
                 {
-                   
-                        if (file != null && file.Length > 0)
+                    if (file != null && file.Length > 0)
+                    {
+                        string fileName = Path.GetFileNameWithoutExtension(file.FileName);
+                        string extension = Path.GetExtension(file.FileName);
+                        string newFileName = fileName + "_" + Guid.NewGuid() + extension;
+
+                        var allowedExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { ".JPG", ".JPEG" };
+                        if (allowedExtensions.Contains(extension))
                         {
-                            string fileName = Path.GetFileNameWithoutExtension(file.FileName);
-                            string extension = Path.GetExtension(file.FileName);
-                            string newFileName = fileName + "_" + Guid.NewGuid() + extension;
-                            string directoryPath = Path.Combine(_env.ContentRootPath, "Uploads");
+                            // Upload to Supabase Storage
+                            var storage = _supabaseClient.Storage.From("user-images");
 
-                            if (!Directory.Exists(directoryPath))
-                            {
-                                Directory.CreateDirectory(directoryPath);
-                            }
+                            Debug.WriteLine(storage);
 
-                            string filePath = Path.Combine(directoryPath, newFileName);
-                            var allowedExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { ".JPG", ".JPEG" };
-                            if (allowedExtensions.Contains(extension))
+                            using var memoryStream = new MemoryStream();
+                            await file.CopyToAsync(memoryStream);
+                            memoryStream.Position = 0;
+
+                            // Convert MemoryStream to byte[]
+                            byte[] fileBytes = memoryStream.ToArray();
+
+                            var uploadResponse = await storage.Upload(fileBytes, newFileName);
+
+                            if (uploadResponse != null)
                             {
-                                using (var stream = new FileStream(filePath, FileMode.Create))
-                                {
-                                    await file.CopyToAsync(stream);
-                                }
-                                user.ImagePath = newFileName;
+                                user.ImagePath = storage.GetPublicUrl(newFileName);
                             }
+                            else
+                            {
+                                return Json(new { success = false, message = "Failed to upload image to storage" });
+                            }
+                        }
+                      
                             else
                             {
                                 string errorJson = JsonSerializer.Serialize(new { success = false, message = "FileError Invalid file format. Only JPG, JPEG are allowed." });
@@ -229,25 +245,35 @@ namespace DataInfo.Controllers
                         string fileName = Path.GetFileNameWithoutExtension(file.FileName);
                         string extension = Path.GetExtension(file.FileName);
                         string newFileName = fileName + "_" + Guid.NewGuid() + extension;
-                        string directoryPath = Path.Combine(_env.ContentRootPath, "Uploads");
 
-                        if (!Directory.Exists(directoryPath))
-                        {
-                            Directory.CreateDirectory(directoryPath);
-                        }
-
-                        string filePath = Path.Combine(directoryPath, newFileName);
                         var allowedExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { ".JPG", ".JPEG" };
                         if (allowedExtensions.Contains(extension))
                         {
-                            using (var stream = new FileStream(filePath, FileMode.Create))
-                            {
+                            // Upload to Supabase Storage
+                            var storage = _supabaseClient.Storage.From("user-images");
 
-                                Debug.WriteLine(newFileName);
-                                await file.CopyToAsync(stream);
+                            Debug.WriteLine(storage);
+
+                            using var memoryStream = new MemoryStream();
+                            await file.CopyToAsync(memoryStream);
+                            memoryStream.Position = 0;
+
+                            // Convert MemoryStream to byte[]
+                            byte[] fileBytes = memoryStream.ToArray();
+
+                            var uploadResponse = await storage.Upload(fileBytes, newFileName);
+
+                            if (uploadResponse != null)
+                            {
+                                editUser.ImagePath = storage.GetPublicUrl(newFileName);
                             }
-                            editUser.ImagePath = newFileName;
+                            else
+                            {
+                                return Json(new { success = false, message = "Failed to upload image to storage" });
+                            }
                         }
+
+                      
                         else
                         {
                             ModelState.AddModelError("FileError", "Invalid file format. Only JPG, JPEG are allowed.");

@@ -566,7 +566,7 @@
                 { "targets": [5], "data": "Gender_", "className": "text-center dt-center" },
                 { "targets": [6], "data": "Dob", "className": "text-center dt-center" },
                 { "targets": [7], "data": "Address", "render": function (data, type, row) { return type === 'display' && data && data.length > 10 ? '<span title="' + data + '">' + data.substring(0, 12) + '</span>' : (data || ''); }, "className": "text-center dt-center" },
-                { "targets": [8], "data": "ImagePath", "render": function (data, type, row, meta) { return data && data.trim() !== "" ? '<img src="/Uploads/' + data + '" alt="User Image" class="img-thumbnail rounded-circle shadow-sm" style="max-width: 50px; max-height: 50px;" />' : '<span class="text-muted">No image</span>'; }, "className": "text-center dt-center ps-1", "orderable": false },
+                { "targets": [8], "data": "ImagePath", "render": function (data, type, row, meta) { return data && data.trim() !== "" ? '<img src="'+data+'" alt="User Image" class="img-thumbnail rounded-circle shadow-sm" style="max-width: 50px; max-height: 50px;" />' : '<span class="text-muted">No image</span>'; }, "className": "text-center dt-center ps-1", "orderable": false },
                 { "targets": [9], "data": "selectedCity", "render": function (data, type, row) { return type === 'display' && data && data.length > 12 ? '<span title="' + data + '">' + data.substring(0, 12) + '...</span>' : (data || ''); }, "className": "text-center dt-center" },
                 { "targets": [10], "data": "selectedState", "render": function (data, type, row) { return type === 'display' && data && data.length > 12 ? '<span title="' + data + '">' + data.substring(0, 12) + '...</span>' : (data || ''); }, "className": "text-center dt-center" },
                 { "targets": [11], "data": "SelectedCountry", "render": function (data, type, row) { return type === 'display' && data && data.length > 9 ? '<span title="' + data + '">' + data.substring(0, 9) + '...</span>' : (data || ''); }, "className": "text-center dt-center" },
@@ -926,7 +926,7 @@ showCustomConfirm(userId, function (confirmed) {
                         $("#editstate").val(response.message.SelectedStateId);
                         $("#editCity").val(response.message.SelectedCityId);
 
-                        $("#edit_image").attr("src", "/Uploads/" + response.message.ImagePath.toString());
+                        $("#edit_image").attr("src", response.message.ImagePath.toString());
 
 
 
@@ -1081,7 +1081,7 @@ $.ajax({
             var user = response.message;
 
            
-                             $("#dImage").attr("src", "/Uploads/" + user.ImagePath);
+                             $("#dImage").attr("src",user.ImagePath);
 
 
             // Update text content

@@ -7,10 +7,24 @@ builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddEnvironmentVariables();
 
+// Add IWebHostEnvironment
+builder.Services.AddSingleton<IWebHostEnvironment>(builder.Environment);
+
+
+var supabaseUrl = builder.Configuration["Supabase:Url"];
+var supabaseKey = builder.Configuration["Supabase:Key"];
+var supabaseClient = new Supabase.Client(supabaseUrl??"", supabaseKey);
+await supabaseClient.InitializeAsync();
+
+builder.Services.AddSingleton(supabaseClient);
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient();
+
+
+
 
 var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL") ??
                        builder.Configuration.GetConnectionString("DefaultConnection");
