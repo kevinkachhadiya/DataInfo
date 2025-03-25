@@ -53,244 +53,248 @@
 
 <div class="modal fade" id="CreateModal" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="false">
     <div class="modal-dialog modal-md" role="document">
-        <!-- Add modal-sm here -->
         <div class="modal-content">
             <div class="modal-header bg-success" style="color:white;">
                 <h5 class="modal-title" id="editUserModalLabel">Create User</h5>
                 <button type="button" class="btn-close" aria-label="Close" onclick="$('#CreateModal').modal('hide')"></button>
-
             </div>
             <div class="modal-body">
-                @{
+                @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { enctype = "multipart/form-data", id = "CreateNewUser" }))
+                {
+                    <div class="container" style="max-width:auto">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                    using (Html.BeginForm("Index", "Home", FormMethod.Post, new { enctype = "multipart/form-data", id = "CreateNewUser" }))
-                    {
+                        <!-- First Name -->
+                        <div class="row mb-3 mt-3">
+                            <div class="col-4 col-md-3">
+                                <label class="control-label" style="vertical-align: sub;">First Name</label>
 
-                        <div class="container" style="max-width:auto">
+                            </div>
 
-                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-                            <div class="row mb-3 mt-3">
-                                <div class="col-md-3">
-                                    @Html.LabelFor(model => item.FirstName, new { @class = "control-label" })
-                                </div>
-                                <div class="col-md-8">
-                                    @Html.TextBox("FirstName", null, new
+                            <div class="col-8 col-md-8">
+                                <span class="text-danger" id="firstNameError" style="display:none"></span>
+                                @Html.TextBox("FirstName", null, new
                                     {
                                         @class = "form-control pl-3",
                                         placeholder = "Enter Your Firstname",
-                                   onkeyup = "validateFirstName(this)",
-                                   required = "required",
-                                   type = "text",
-                                   maxlength = "50",
+                                        onkeyup = "validateFirstName(this)",
+                                        required = "required",
+                                        type = "text",
+                                        maxlength = "50"
+                                    })
 
-                               })
-                                    <span class="text-danger" id="firstNameError"></span>
-                                </div>
                             </div>
+                        </div>
 
-                            <div class="row mb-3">
-                                <div class="col-md-3">
-                                    @Html.LabelFor(model => item.LastName, new { @class = "control-label" })
-                                </div>
-                                <div class="col-md-8">
-                                    @Html.TextBox("LastName", null, new
+                        <!-- Last Name -->
+                        <div class="row mb-3">
+                            <div class="col-4 col-md-3 ">
+                                <label class="control-label" style="vertical-align: sub;">Last Name</label>
+                            </div>
+                            <div class="col-8 col-md-8">
+                                <span class="text-danger" id="LastNameError" style="display:none"></span>
+                                @Html.TextBox("LastName", null, new
                                     {
                                         @class = "form-control",
                                         placeholder = "Enter Your Lastname",
-                                   onkeyup = "validateLastName(this)",
-                                   required = "required",
-                                   maxlength = "50"
-                               })
-                                    <span class="text-danger" id="LastNameError"></span>
-                                </div>
-                            </div>
+                                        onkeyup = "validateLastName(this)",
+                                        required = "required",
+                                        maxlength = "50"
+                                    })
 
-                            <div class="row mb-3">
-                                <div class="col-md-3">
-                                    @Html.LabelFor(model => item.Email, new { @class = "control-label" })
-                                </div>
-                                <div class="col-md-8">
-                                    @Html.TextBox("Email", null, new
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="row mb-3">
+                            <div class="col-4 col-md-3">
+                                <label class="control-label" style="vertical-align: sub;">Email</label>
+                            </div>
+                            <div class="col-8 col-md-8">
+                                <span class="text-danger" id="Email_" style="display:none"></span>
+                                @Html.TextBox("Email", null, new
                                     {
                                         @class = "form-control",
                                         placeholder = "Enter Your Email",
                                         onkeyup = "validateEmail(this)",
                                         required = "required",
-                                        maxlength = "50",
-                                   })
-                                    <span class="text-danger" id="Email_"></span>
-                                </div>
-                            </div>
+                                        maxlength = "50"
+                                    })
 
-                            <div class="row mb-3">
-                                <div class="col-md-3">
-                                    @Html.LabelFor(model => item.MobileNo, new { @class = "control-label" })
-                                </div>
-                                <div class="col-md-1 align-content-center">
-                                    <span class="text-success">+91</span>
-                                </div>
-                                <div class="col-md-7" style="margin-left:-6px;">
-                                    @Html.TextBox("MobileNo", null, new
-                               {
-                                   @class = "form-control",
-                                   placeholder = "Enter Your Mobile_No",
-                                   type = "number",
-                                   onkeyup = "validateMobile(this)",
-                                   required = "required",
-                                   maxlength = "15",
-                               })
-                                    <span class="text-danger" id="Mo_number"></span>
-                                </div>
                             </div>
+                        </div>
 
-                            <div class="row mb-3">
-                                <div class="col-md-3">
-                                    @Html.LabelFor(model => item.Gender1, new { @class = "control-label", id = "gender_" })
-                                </div>
-                                <div class="col-md-8 d-flex">
-                                    @foreach (var gender in Enum.GetValues(typeof(DataInfo.Models.Gender)))
+                        <!-- Mobile No -->
+                        <div class="row mb-3">
+                            <div class="col-4 col-md-3 ">
+                                <label class="control-label" style="vertical-align: sub;">Mobile No</label>
+
+                            </div>
+                            <div class="col-2 col-md-1 ">
+                                <span class="text-success" style="vertical-align: sub;">+91</span>
+                            </div>
+                            <div class="col-6 col-md-7 " style="margin-left:-6px;">
+                                <span class="text-danger" id="Mo_number" style="display:none"></span>
+                                @Html.TextBox("MobileNo", null, new
                                     {
-                                        <div class="form-check me-4">
-                                            @Html.RadioButton("Gender1", gender, new
-                                            {
-                                                @class = "form-check-input",
-                                            required = "required"
-                                       })
-                                            <label class="form-check-label ms-2">@gender</label>
-                                        </div>
-                                    }
-                                </div>
-                            </div>
+                                        @class = "form-control",
+                                        placeholder = "Enter Your Mobile_No",
+                                        type = "number",
+                                        onkeyup = "validateMobile(this)",
+                                        required = "required",
+                                        maxlength = "10"
+                                    })
 
-                            <div class="row mb-3">
-                                <div class="col-md-3">
-                                    Dob :
-                                </div>
-                                <div class="col-md-8">
-                                    @Html.TextBox("Dob", null, new
+                            </div>
+                        </div>
+
+                        <!-- Gender -->
+                        <div class="row mb-3">
+                            <div class="col-4 col-md-3 d-flex align-items-center">
+                                <label class="control-label" style="vertical-align: sub;">Gender</label>
+                            </div>
+                            <div class="col-8 col-md-8  align-items-center ">
+                                @foreach (var gender in Enum.GetValues(typeof(DataInfo.Models.Gender)))
+                                {
+                                    <div class="form-check me-2">
+                                        @Html.RadioButton("Gender1", gender, new { @class = "form-check-input", required = "required" })
+                                        <label class="form-check-label ms-1">@gender</label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Date of Birth -->
+                        <div class="row mb-3">
+                            <div class="col-4 col-md-3 " style="vertical-align: sub;">
+                                Dob
+                            </div>
+                            <div class="col-8 col-md-8">
+                                <span class="text-danger" id="Date" style="display:none"></span>
+                                @Html.TextBox("Dob", null, new
                                     {
                                         @class = "form-control",
                                         type = "date",
                                         Max = DateTime.Now.AddYears(-18).ToString("yyyy-MM-dd"),
                                         Min = DateTime.Now.AddYears(-125).ToString("yyyy-MM-dd"),
                                         onchange = "handleDateChange(this)",
-
                                         required = "required"
-                               })
+                                    })
 
-                                    <span class="text-danger" id="Date"></span>
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-3">
-                                    @Html.LabelFor(model => item.Password, new { @class = "control-label" })
-                                </div>
-                                <div class="col-md-8">
-                                    @Html.Password("Password", null, new
-                               {
-                                   @class = "form-control",
-                                   placeholder = "Enter Your Password",
-                                   required = "required",
-                                   onkeyup = "validatePassword(this)",
-
-
-                               })
-
-                                    <span class="text-danger" id="PassWord_"></span>
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-3">
-                                    <label class="control-label">C_Password</label>
-                                  
-                                </div>
-                                <div class="col-md-8">
-                                    @Html.Password("ConfirmPassword", null,
-                                   new
-                                        {
-                                            @class = "form-control",
-                                   placeholder = "Enter Your Confirm Password",
-                                   required = "required",
-                                   onkeyup = "validateCPassword(this)"
-                               })
-                                    <span class="text-danger" id="C_PassWord_"></span>
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-3">
-                                    @Html.LabelFor(model => item.Address, new { @class = "control-label" })
-                                </div>
-                                <div class="col-md-8">
-                                    @Html.TextArea("Address", null, new
-                                    {
-
-                                   @class = "form-control",
-                                   placeholder = "Enter Your Address",
-                                   required = "required",
-                                   onkeyup = "validateAddress(this)"
-                               })
-                                    <span class="text-danger" id="Address_"></span>
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-3">
-                                    <label class="control-label">Country</label>
-                                </div>
-                                <div class="col-md-8">
-                                    @Html.DropDownList("SelectedCountryId", item.CountryList, "Select a Country", new { @class = "form-control", id = "countryDropdown", required = "required" })
-                                    @Html.ValidationMessageFor(model => item.SelectedCountryId, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-3">
-                                    <label class="control-label">State</label>
-                                </div>
-                                <div class="col-md-8">
-                                    @Html.DropDownList("SelectedStateId", item.StateList, "Select a State", new { @class = "form-control", id = "stateDropdown", required = "required" })
-                                    @Html.ValidationMessageFor(model => item.SelectedStateId, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-3">
-                                    <label class="control-label">   City </label>
-                                </div>
-                                <div class="col-md-8">
-                                    @Html.DropDownList("SelectedCityId", item.CityList, "Select a City", new { @class = "form-control", id = "CityDropdown", required = "required" })
-                                    @Html.ValidationMessageFor(model => item.SelectedCityId, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-3">
-                                    <label for="file" class="control-label">Image</label>
-                                </div>
-                                <div class="col-md-8">
-                                    <img id="previewImage" src="" alt="Uploaded Image"
-                                         class="img-thumbnail mb-2"
-                                         style="width: 150px; height: 150px; display: @(string.IsNullOrEmpty(item.ImagePath) ? "none" : "block");" />
-
-                                    <input type="file" name="file" id="file" class="form-control" required="required"
-                                           accept=".jpg,.jpeg" />
-                                </div>
-                            </div>
-                            <hr />
-                            <div class="row mb-3">
-                                <div class="col-md-3">
-                                    @Html.ActionLink("Back to List", "ViewUser")
-                                </div>
-                                <div class="col-md-8 text-end">
-                                    <input type="submit" value="Create" class="btn btn-primary" />
-                                </div>
                             </div>
                         </div>
-                    }
+
+                        <!-- Password -->
+                        <div class="row mb-3">
+                            <div class="col-4 col-md-3 ">
+                                <label class="control-label" style="vertical-align: sub;">Password</label>
+                            </div>
+                            <div class="col-8 col-md-8 ">
+                                <span class="text-danger" id="PassWord_" style="display:none"></span>
+                                @Html.Password("Password", null, new
+                                    {
+                                        @class = "form-control",
+                                        placeholder = "Enter Your Password",
+                                        required = "required",
+                                        onkeyup = "validatePassword(this)"
+                                    })
+
+                            </div>
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="row mb-3">
+                            <div class="col-4 col-md-3 ">
+                                <label class="control-label" style="vertical-align: sub;">C_Password</label>
+                            </div>
+                            <div class="col-8 col-md-8">
+                                <span class="text-danger" id="C_PassWord_" style="display:none"></span>
+                                @Html.Password("ConfirmPassword", null, new
+                                    {
+                                        @class = "form-control",
+                                        placeholder = "Enter Your Confirm Password",
+                                        required = "required",
+                                        onkeyup = "validateCPassword(this)"
+                                    })
+
+                            </div>
+                        </div>
+
+                        <!-- Address -->
+                        <div class="row mb-3">
+                            <div class="col-4 col-md-3 ">
+                                <label class="control-label" style="vertical-align: sub;">Address</label>
+                            </div>
+                            <div class="col-8 col-md-8 ">
+                                <span class="text-danger" id="Address_" style="display:none"></span>
+                                @Html.TextArea("Address", null, new
+                                    {
+                                        @class = "form-control",
+                                        placeholder = "Enter Your Address",
+                                        required = "required",
+                                        onkeyup = "validateAddress(this)"
+                                    })
+
+                            </div>
+                        </div>
+
+                        <!-- Country -->
+                        <div class="row mb-3">
+                            <div class="col-4 col-md-3 ">
+                                <label class="control-label" style="vertical-align: sub">Country</label>
+                            </div>
+                            <div class="col-8 col-md-8 align-items-center">
+                                @Html.DropDownList("SelectedCountryId", item.CountryList, "Select a Country", new { @class = "form-control", id = "countryDropdown", required = "required" })
+                                @Html.ValidationMessageFor(model => item.SelectedCountryId, "", new { @class = "text-danger", style = "display:none" })
+                            </div>
+                        </div>
+
+                        <!-- State -->
+                        <div class="row mb-3">
+                            <div class="col-4 col-md-3" style="vertical-align: sub">
+                                <label class="control-label">State</label>
+                            </div>
+                            <div class="col-8 col-md-8 d-flex align-items-center">
+                                @Html.DropDownList("SelectedStateId", item.StateList, "Select a State", new { @class = "form-control", id = "stateDropdown", required = "required" })
+                                @Html.ValidationMessageFor(model => item.SelectedStateId, "", new { @class = "text-danger", style = "display:none" })
+                            </div>
+                        </div>
+
+                        <!-- City -->
+                        <div class="row mb-3">
+                            <div class="col-4 col-md-3 ">
+                                <label class="control-label" style="vertical-align: sub;">City</label>
+                            </div>
+                            <div class="col-8 col-md-8 align-items-center">
+                                @Html.DropDownList("SelectedCityId", item.CityList, "Select a City", new { @class = "form-control", id = "CityDropdown", required = "required" })
+                                @Html.ValidationMessageFor(model => item.SelectedCityId, "", new { @class = "text-danger", style = "display:none" })
+                            </div>
+                        </div>
+
+                        <!-- Image -->
+                        <div class="row mb-3">
+                            <div class="col-4 col-md-3 d-flex align-items-center">
+                                <label for="file" class="control-label" style="vertical-align: sub;">Image</label>
+                            </div>
+                            <div class="col-8 col-md-8">
+                                <img id="previewImage" src="" alt="Uploaded Image" class="img-thumbnail mb-2" style="width: 150px; height: 150px; display: @(string.IsNullOrEmpty(item.ImagePath) ? "none" : "block");" />
+                                <input type="file" name="file" id="file" class="form-control col-" required="required" accept=".jpg,.jpeg" />
+
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <!-- Buttons -->
+                        <div class="row mb-3 ">
+                            <div class="col-6 col-md-3">
+                                @Html.ActionLink("Back to List", "ViewUser")
+                            </div>
+                            <div class="col-6 col-md-8 text-end">
+                                <input type="submit" value="Create" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
                 }
             </div>
         </div>
@@ -298,174 +302,182 @@
 </div>
 
 <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-md" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-warning">
+            <div class="modal-header bg-warning" style="color:white;">
                 <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
                 <button type="button" class="btn-close" aria-label="Close" onclick="$('#editUserModal').modal('hide')"></button>
             </div>
-
             <div class="modal-body">
-                @{
-                    using (Html.BeginForm("ViewUser", "Home", FormMethod.Post, new { enctype = "multipart/form-data", id = "EditUserForm" }))
-                    {
-                        @Html.Hidden("user_id")
-                        <div class="container">
+                @using (Html.BeginForm("ViewUser", "Home", FormMethod.Post, new { enctype = "multipart/form-data", id = "EditUserForm" }))
+                {
+                    @Html.Hidden("user_id")
+                    <div class="container" style="max-width:auto">
+                        <input type="hidden" id="userId" name="userId" />
 
-                            <input type="hidden" id="userId" name="userId" />
-
-                            <div class="row mb-3 mt-3">
-                                <div class="col-md-3">
-
-                                    <label class="control-label">First Name</label>
-
-                                </div>
-                                <div class="col-md-8">
-                                    <input type="text" id="editFirstName" name="FirstName" class="form-control" , onkeyup="editvalidateFirstName(this)" ,placeholder="Enter Your Firstname" required="required" />
-                                    <span class="text-danger" id="editfirstNameError"></span>
-                                </div>
+                        <!-- First Name -->
+                        <div class="row mb-3 mt-3">
+                            <div class="col-4 col-md-3 d-flex align-items-center">
+                                <label class="control-label" style="vertical-align: sub;">First Name</label>
                             </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-3">
-                                    <label class="control-label">Last Name</label>
-
-                                </div>
-                                <div class="col-md-8">
-                                    <input type="text" id="editLastName" name="LastName" onkeyup="editvalidateLastName(this)" required="required" maxlength="50" class="form-control" placeholder="Enter Your Lastname" />
-
-                                    <span class="text-danger" id="editLastNameError"></span>
-                                </div>
+                            <div class="col-8 col-md-8">
+                                <span class="text-danger" id="editfirstNameError" style="display:none"></span>
+                                <input type="text" id="editFirstName" name="FirstName" class="form-control" onkeyup="editvalidateFirstName(this)" placeholder="Enter Your Firstname" required="required" />
                             </div>
+                        </div>
 
-                            <div class="row mb-3">
-                                <div class="col-md-3">
-                                    <label class="control-label">Email</label>
-
-                                </div>
-                                <div class="col-md-8">
-                                    <input type="email" id="editEmail" onkeyup="editvalidateEmail(this)" required="required" maxlength="35" name="Email" class="form-control" placeholder="Enter Your Email" />
-                                    <span class="text-danger" id="editEmail12"></span>
-                                </div>
+                        <!-- Last Name -->
+                        <div class="row mb-3">
+                            <div class="col-4 col-md-3 d-flex align-items-center">
+                                <label class="control-label" style="vertical-align: sub;">Last Name</label>
                             </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-3">
-                                    <label class="control-label">Mobile No</label>
-                                </div>
-                                <div class="col-md-8">
-                                    <input type="number" id="editMobileNo" name="MobileNo" onkeyup="editvalidateMobile(this)" required="required" maxlength="15" class="form-control" placeholder="Enter Your Mobile No" />
-
-
-
-                                    <span class="text-danger" id="editMo_number"></span>
-                                </div>
+                            <div class="col-8 col-md-8">
+                                <span class="text-danger" id="editLastNameError" style="display:none"></span>
+                                <input type="text" id="editLastName" name="LastName" onkeyup="editvalidateLastName(this)" required="required" maxlength="50" class="form-control" placeholder="Enter Your Lastname" />
                             </div>
+                        </div>
 
-                            <div class="row mb-3">
-                                <div class="col-md-3">Gender:</div>
-                                <div class="col-md-8 d-flex">
-                                    @foreach (var gender in Enum.GetValues(typeof(DataInfo.Models.Gender)))
-                                    {
-                                        <div class="form-check me-4">
-                                            <input type="radio" name="Gender1" value="@((int)gender)" class="form-check-input editGender" required="required" />
-                                            <label class="form-check-label ms-2">@gender</label>
-                                        </div>
-                                    }
-                                </div>
+                        <!-- Email -->
+                        <div class="row mb-3">
+                            <div class="col-4 col-md-3 d-flex align-items-center">
+                                <label class="control-label" style="vertical-align: sub;">Email</label>
                             </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-3">DOB:</div>
-                                <div class="col-md-8">
-                                    <input type="date" id="editDob" name="Dob" onchange="edithandleDateChange(this)" required="required" class="form-control" Min=DateTime.Now.AddYears(-125).ToString("yyyy-MM-dd") max="@DateTime.Now.AddYears(-18).ToString("yyyy-MM-dd")" />
-
-                                    <span class="text-danger" id="editDate"></span>
-
-                                </div>
+                            <div class="col-8 col-md-8">
+                                <span class="text-danger" id="editEmail12" style="display:none"></span>
+                                <input type="email" id="editEmail" onkeyup="editvalidateEmail(this)" required="required" maxlength="35" name="Email" class="form-control" placeholder="Enter Your Email" />
                             </div>
+                        </div>
 
-                            <div class="row mb-3">
-                               <label class="control-label col-md-3">Password</label>
-                                <div class="col-md-8">
-                                    <input type="password" id="editPassword" name="Password" required="required" onkeyup="editvalidatePassword(this)" class="form-control" placeholder="Enter Your Password" />
-                                    <span class="text-danger" id="editPassWord_"></span>
-
-                                </div>
+                        <!-- Mobile No -->
+                        <div class="row mb-3">
+                            <div class="col-4 col-md-3 d-flex align-items-center">
+                                <label class="control-label" style="vertical-align: sub;">Mobile No</label>
                             </div>
-
-                            <div class="row mb-3">
-                                <label class="control-label col-md-3">C_Password</label>
-                                <div class="col-md-8">
-                                    <input type="password" id="editConfirmPassword" onkeyup="editvalidateCPassword(this)" name="ConfirmPassword" required="required" class="form-control" placeholder="Confirm Your Password" />
-                                    <span class="text-danger" id="editC_PassWord_"></span>
-
-                                </div>
+                            <div class="col-2 col-md-1 d-flex align-items-center">
+                                <span class="text-success" style="vertical-align: sub;">+91</span>
                             </div>
-
-                            <div class="row mb-3">
-                                <label class="control-label col-md-3">Address</label>
-                                     <div class="col-md-8">
-                                    <textarea id="editAddress" name="Address" class="form-control" required="required" onkeyup="editvalidateAddress(this)" placeholder="Enter Your Address"></textarea>
-
-                                    <span class="text-danger" id="editAddress_"></span>
-                                </div>
+                            <div class="col-6 col-md-7" style="margin-left:-6px;">
+                                <span class="text-danger" id="editMo_number" style="display:none"></span>
+                                <input type="number" id="editMobileNo" name="MobileNo" onkeyup="editvalidateMobile(this)" required="required" maxlength="10" class="form-control" placeholder="Enter Your Mobile No" />
                             </div>
+                        </div>
 
-                            <div class="row mb-3">
-                                <div class="col-md-3">
-                                    <label class="control-label">Country</label>
-
-                                  
-                                </div>
-                                <div class="col-md-8">
-                                    @Html.DropDownList("SelectedCountryId", item.CountryList, "Select a Country", new { @class = "form-control", id = "editcountry", required = "required" })
-                                    @Html.ValidationMessageFor(model => item.SelectedCountryId, "", new { @class = "text-danger" })
-                                </div>
+                        <!-- Gender -->
+                        <div class="row mb-3">
+                            <div class="col-4 col-md-3 d-flex align-items-center">
+                                <label class="control-label" style="vertical-align: sub;">Gender:</label>
                             </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-3">
-                                    <label class="control-label">state</label>
-                                  
-                                </div>
-                                <div class="col-md-8">
-                                    @Html.DropDownList("SelectedStateId", item.StateList, "Select a State", new { @class = "form-control", id = "editstate", required = "required" })
-                                    @Html.ValidationMessageFor(model => item.SelectedStateId, "", new { @class = "text-danger" })
-                                </div>
+                            <div class="col-8 col-md-8">
+                                @foreach (var gender in Enum.GetValues(typeof(DataInfo.Models.Gender)))
+                                {
+                                    <div class="form-check me-2">
+                                        <input type="radio" name="Gender1" value="@((int)gender)" class="form-check-input editGender" required="required" />
+                                        <label class="form-check-label ms-1">@gender</label>
+                                    </div>
+                                }
                             </div>
-                            <div class="row mb-3">
-                                <div class="col-md-3">
-                                    <label class="control-label">City</label>
-                                    
-                                </div>
-                                <div class="col-md-8">
-                                    @Html.DropDownList("SelectedCityId", item.CityList, "Select a City", new { @class = "form-control", id = "editcity", required = "required" })
-                                    @Html.ValidationMessageFor(model => item.SelectedCityId, "", new { @class = "text-danger" })
-                                </div>
+                        </div>
+
+                        <!-- DOB -->
+                        <div class="row mb-3">
+                            <div class="col-4 col-md-3 d-flex align-items-center">
+                                <label class="control-label" style="vertical-align: sub;">DOB:</label>
                             </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-3">
-                                    <label for="file" class="control-label">Image</label>
-                                </div>
-                                <div class="col-md-8">
-                                    <img id="edit_image" src="" alt="Uploaded Image"
-                                         class="img-thumbnail mb-2"
-                                         style="width: 150px; height: 150px; display:block;" />
-
-                                    <input type="file" name="file" id="editfile" class="form-control"
-                                           accept=".jpg,.jpeg" />
-                                </div>
+                            <div class="col-8 col-md-8">
+                                <span class="text-danger" id="editDate" style="display:none"></span>
+                                <input type="date" id="editDob" name="Dob" onchange="edithandleDateChange(this)" required="required" class="form-control" min="@DateTime.Now.AddYears(-125).ToString("yyyy-MM-dd")" max="@DateTime.Now.AddYears(-18).ToString("yyyy-MM-dd")" />
                             </div>
+                        </div>
 
-                            <hr />
-                            <div class="text-end">
+                        <!-- Password -->
+                        <div class="row mb-3">
+                            <div class="col-4 col-md-3 d-flex align-items-center">
+                                <label class="control-label" style="vertical-align: sub;">Password</label>
+                            </div>
+                            <div class="col-8 col-md-8">
+                                <span class="text-danger" id="editPassWord_" style="display:none"></span>
+                                <input type="password" id="editPassword" name="Password" required="required" onkeyup="editvalidatePassword(this)" class="form-control" placeholder="Enter Your Password" />
+                            </div>
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="row mb-3">
+                            <div class="col-4 col-md-3 d-flex align-items-center">
+                                <label class="control-label" style="vertical-align: sub;">C_Password</label>
+                            </div>
+                            <div class="col-8 col-md-8">
+                                <span class="text-danger" id="editC_PassWord_" style="display:none"></span>
+                                <input type="password" id="editConfirmPassword" onkeyup="editvalidateCPassword(this)" name="ConfirmPassword" required="required" class="form-control" placeholder="Confirm Your Password" />
+                            </div>
+                        </div>
+
+                        <!-- Address -->
+                        <div class="row mb-3">
+                            <div class="col-4 col-md-3 d-flex align-items-center">
+                                <label class="control-label" style="vertical-align: sub;">Address</label>
+                            </div>
+                            <div class="col-8 col-md-8">
+                                <span class="text-danger" id="editAddress_" style="display:none"></span>
+                                <textarea id="editAddress" name="Address" class="form-control" required="required" onkeyup="editvalidateAddress(this)" placeholder="Enter Your Address"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Country -->
+                        <div class="row mb-3">
+                            <div class="col-4 col-md-3 d-flex align-items-center">
+                                <label class="control-label" style="vertical-align: sub;">Country</label>
+                            </div>
+                            <div class="col-8 col-md-8">
+                                @Html.DropDownList("SelectedCountryId", item.CountryList, "Select a Country", new { @class = "form-control", id = "editcountry", required = "required" })
+                                @Html.ValidationMessageFor(model => item.SelectedCountryId, "", new { @class = "text-danger", style = "display:none" })
+                            </div>
+                        </div>
+
+                        <!-- State -->
+                        <div class="row mb-3">
+                            <div class="col-4 col-md-3 d-flex align-items-center">
+                                <label class="control-label" style="vertical-align: sub;">State</label>
+                            </div>
+                            <div class="col-8 col-md-8">
+                                @Html.DropDownList("SelectedStateId", item.StateList, "Select a State", new { @class = "form-control", id = "editstate", required = "required" })
+                                @Html.ValidationMessageFor(model => item.SelectedStateId, "", new { @class = "text-danger", style = "display:none" })
+                            </div>
+                        </div>
+
+                        <!-- City -->
+                        <div class="row mb-3">
+                            <div class="col-4 col-md-3 d-flex align-items-center">
+                                <label class="control-label" style="vertical-align: sub;">City</label>
+                            </div>
+                            <div class="col-8 col-md-8">
+                                @Html.DropDownList("SelectedCityId", item.CityList, "Select a City", new { @class = "form-control", id = "editcity", required = "required" })
+                                @Html.ValidationMessageFor(model => item.SelectedCityId, "", new { @class = "text-danger", style = "display:none" })
+                            </div>
+                        </div>
+
+                        <!-- Image -->
+                        <div class="row mb-3">
+                            <div class="col-4 col-md-3 d-flex align-items-center">
+                                <label for="file" class="control-label" style="vertical-align: sub;">Image</label>
+                            </div>
+                            <div class="col-8 col-md-8">
+                                <img id="edit_image" src="" alt="Uploaded Image" class="img-thumbnail mb-2" style="width: 150px; height: 150px; display: @(string.IsNullOrEmpty(item.ImagePath) ? "none" : "block");" />
+                                <input type="file" name="file" id="editfile" class="form-control" accept=".jpg,.jpeg" />
+                            </div>
+                        </div>
+
+                        <hr />
+                        <!-- Buttons -->
+                        <div class="row mb-3 d-flex">
+                            <div class="col-5 col-md-3">
+                                <a href="/Home/ViewUser">Back to List</a>
+                            </div>
+                            <div class="col-7 col-md-8 text-end d-flex justify-content-end gap-2">
                                 <button type="submit" class="btn btn-primary">Save Changes</button>
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             </div>
                         </div>
-                    }
+                    </div>
                 }
             </div>
         </div>
@@ -1104,19 +1116,19 @@
             const letterPattern = /^[A-Za-z]*$/;
 
             if (!value) {
-                $errorSpan.text("First name is required");
+                $errorSpan.text("First name is required").css("display","block");
                 input.setCustomValidity("First name is required");
             }
             else if (value.length < 2) {
-                $errorSpan.text("First name must be at least 2 characters");
+                        $errorSpan.text("First name must be at least 2 characters").css("display","block");
                 input.setCustomValidity("First name must be at least 2 characters");
             }
             else if (!letterPattern.test(value)) {
-                $errorSpan.text("First name can only contain letters");
+                        $errorSpan.text("First name can only contain letters").css("display","block");
                 input.setCustomValidity("First name can only contain letters");
             }
             else {
-                $errorSpan.text("");
+                        $errorSpan.text("").css("display","none");
                 input.setCustomValidity("");
             }
         }
@@ -1128,19 +1140,19 @@
             const letterPattern = /^[A-Za-z]*$/;
 
             if (!value) {
-                $errorSpan.text("Last name is required");
+                        $errorSpan.text("Last name is required").css("display","block");
                 input.setCustomValidity("Last name is required");
             }
             else if (value.length < 3) {
-                $errorSpan.text("Last name must be at least 3 characters");
+                        $errorSpan.text("Last name must be at least 3 characters").css("display","block");
                 input.setCustomValidity("Last name must be at least 3 characters");
             }
             else if (!letterPattern.test(value)) {
-                $errorSpan.text("Last name can only contain letters");
+                        $errorSpan.text("Last name can only contain letters").css("display","block");
                 input.setCustomValidity("Last name can only contain letters");
             }
             else {
-                $errorSpan.text("");
+                        $errorSpan.text("").css("display","none");
                 input.setCustomValidity("");
             }
         }
@@ -1152,19 +1164,19 @@
             $errorSpan = $("#Email_");
 
             if (!value) {
-                $errorSpan.text("Email is required");
+                        $errorSpan.text("Email is required").css("display","block");
                 input.setCustomValidity("Email is required");
             }
             else if (value.length < 5) {
-                $errorSpan.text("Email must be at least 5 characters");
+                        $errorSpan.text("Email must be at least 5 characters").css("display","block");
                 input.setCustomValidity("Email must be at least 5 characters");
             }
             else if (!emailPattern.test(value)) {
-                $errorSpan.text("Invalid Formate");
+                        $errorSpan.text("Invalid Formate").css("display","block");
                 input.setCustomValidity("Invalid Formate");
             }
             else {
-                $errorSpan.text("");
+                        $errorSpan.text("").css("display","none");
                 input.setCustomValidity("");
             }
         }
@@ -1177,16 +1189,16 @@
             $errorSpan = $("#Mo_number");
 
             if (!value) {
-                $errorSpan.text("Number is required");
+                        $errorSpan.text("Number is required").css("display","block");
                 input.setCustomValidity("Number is required");
             }
             else if (value.length < 10 || value.length>10)
             {
-                $errorSpan.text(" M_No must be  10 Digits");
+                        $errorSpan.text(" M_No must be  10 Digits").css("display","block");
                 input.setCustomValidity(" M_No must be 10 digits");
             }
             else {
-                $errorSpan.text("");
+                        $errorSpan.text("").css("display","none");
                 input.setCustomValidity("");
             }
         }
@@ -1200,13 +1212,13 @@
             $errorSpan = $("#Date");
 
             if (!value) {
-                $errorSpan.text("Date is required");
+                        $errorSpan.text("Date is required").css("display","block");
                 input.setCustomValidity("Date is required");
 
             }
             else
             {
-                $errorSpan.text("");
+                        $errorSpan.text("").css("display","none");
                 input.setCustomValidity("");
             }
 
@@ -1221,19 +1233,19 @@
          letterPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@@#$%^&*])[A-Za-z\d!@@#$%^&*]{8,}$/;
 
          if (!value) {
-             $errorSpan.text("Password is required");
+                     $errorSpan.text("Password is required").css("display","block");
              input.setCustomValidity("Password is required");
          }
          else if (value.length < 6) {
-             $errorSpan.text("Password must be at least 6 characters");
+                     $errorSpan.text("Password must be at least 6 characters").css("display","block");
              input.setCustomValidity("Password must be at least 6 characters");
          }
          else if (!letterPattern.test(value)) {
-             $errorSpan.html("Password must be at least 8 char long.<br>Include at least:<br>- One uppercase letter<br>- One lowercase letter<br>- One digit<br>- One special character (!@@#$%^&*).");
+                     $errorSpan.html(" 8 charlong, 1 upper, 1 lower, 1 sp_char (!@@#$%^&*).").css("display","block");
              input.setCustomValidity("Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one digit, and one special character (!@@#$%^&*).");
          }
          else {
-             $errorSpan.text("");
+                     $errorSpan.text("").css("display","none");
              input.setCustomValidity("");
          }
 
@@ -1248,21 +1260,21 @@
             prepassword = $("#Password").val();
 
             if (!value) {
-                $errorSpan.text("Password is required");
+                        $errorSpan.text("Password is required").css("display","block");
                 input.setCustomValidity("Password is required");
             }
             else if (value.length < 6) {
-                $errorSpan.text("Password must be at least 6 characters");
+                        $errorSpan.text("Password must be at least 6 characters").css("display","block");
                 input.setCustomValidity("Password must be at least 6 characters");
             }
 
             else if (!(value === prepassword))
             {
-                $errorSpan.html("Password and Confirm password must be same");
+                        $errorSpan.html("Password and Confirm password must be same").css("display","block");
                 input.setCustomValidity("Password and Confirm password must be same");
             }
             else {
-                $errorSpan.text("");
+                        $errorSpan.text("").css("display","none");
                 input.setCustomValidity("");
             }
 
@@ -1276,16 +1288,16 @@
 
 
             if (!value) {
-                $errorSpan.text("Address is required");
+                        $errorSpan.text("Address is required").css("display","block");
                 input.setCustomValidity("Address is required");
             }
             else if (value.length < 5) {
-                $errorSpan.text("Address must be at least 5 characters");
+                        $errorSpan.text("Address must be at least 5 characters").css("display","block");
                 input.setCustomValidity("Address must be at least 5 characters");
             }
 
             else {
-                $errorSpan.text("");
+                        $errorSpan.text("").css("display","none");
                 input.setCustomValidity("");
             }
 
@@ -1298,25 +1310,25 @@
         }
 
         function editvalidateFirstName(input) {
-            const $input = $(input); // Convert to jQuery object
-            const value = $input.val(); // Use jQuery .val()
+            const $input = $(input); 
+            const value = $input.val(); 
             const $errorSpan = $('#editfirstNameError');
             const letterPattern = /^[A-Za-z]*$/;
 
             if (!value) {
-                $errorSpan.text("First name is required");
+                        $errorSpan.text("First name is required").css("display","block");
                 input.setCustomValidity("First name is required");
             }
             else if (value.length < 2) {
-                $errorSpan.text("First name must be at least 2 characters");
+                        $errorSpan.text("First name must be at least 2 characters").css("display","block");
                 input.setCustomValidity("First name must be at least 2 characters");
             }
             else if (!letterPattern.test(value)) {
-                $errorSpan.text("First name can only contain letters");
+                        $errorSpan.text("First name can only contain letters").css("display","block");
                 input.setCustomValidity("First name can only contain letters");
             }
             else {
-                $errorSpan.text("");
+                        $errorSpan.text("").css("display","none");
                 input.setCustomValidity("");
             }
         }
@@ -1328,19 +1340,19 @@
             const letterPattern = /^[A-Za-z]*$/;
 
             if (!value) {
-                $errorSpan.text("Last name is required");
+                        $errorSpan.text("Last name is required").css("display","block");
                 input.setCustomValidity("Last name is required");
             }
             else if (value.length < 3) {
-                $errorSpan.text("Last name must be at least 3 characters");
+                        $errorSpan.text("Last name must be at least 3 characters").css("display","block");
                 input.setCustomValidity("Last name must be at least 3 characters");
             }
             else if (!letterPattern.test(value)) {
-                $errorSpan.text("Last name can only contain letters");
+                        $errorSpan.text("Last name can only contain letters").css("display","block");
                 input.setCustomValidity("Last name can only contain letters");
             }
             else {
-                $errorSpan.text("");
+                        $errorSpan.text("").css("display","none");
                 input.setCustomValidity("");
             }
         }
@@ -1352,19 +1364,19 @@
             $errorSpan = $("#editEmail12");
 
             if (!value) {
-                $errorSpan.text("Email is required");
+                        $errorSpan.text("Email is required").css("display","block");
                 input.setCustomValidity("Email is required");
             }
             else if (value.length < 5) {
-                $errorSpan.text("Email must be at least 5 characters");
+                        $errorSpan.text("Email must be at least 5 characters").css("display","block");
                 input.setCustomValidity("Email must be at least 5 characters");
             }
             else if (!emailPattern.test(value)) {
-                $errorSpan.text("Invalid Formate");
+                        $errorSpan.text("Invalid Formate").css("display","block");
                 input.setCustomValidity("Invalid Formate");
             }
             else {
-                $errorSpan.text("");
+                        $errorSpan.text("").css("display","none");
                 input.setCustomValidity("");
             }
         }
@@ -1376,15 +1388,15 @@
             $errorSpan = $("#editMo_number");
 
             if (!value) {
-                $errorSpan.text("Number is required");
+                $errorSpan.text("Number is required").css("display","block");
                 input.setCustomValidity("Number is required");
             }
             else if (value.length < 10 || value.length > 10) {
-                $errorSpan.text(" M_No must be  10 Digits");
+                $errorSpan.text(" M_No must be  10 Digits").css("display","block");
                 input.setCustomValidity(" M_No must be 10 digits");
             }
             else {
-                $errorSpan.text("");
+                $errorSpan.text("").css("display","none");
                 input.setCustomValidity("");
             }
         }
@@ -1396,12 +1408,12 @@
             $errorSpan = $("#editDate");
 
             if (!value) {
-                $errorSpan.text("Date is required");
+                        $errorSpan.text("Date is required").css("display","block");
                 input.setCustomValidity("Date is required");
 
             }
             else {
-                $errorSpan.text("");
+                        $errorSpan.text("").css("display","none");
                 input.setCustomValidity("");
             }
 
@@ -1415,19 +1427,19 @@
             letterPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@@#$%^&*])[A-Za-z\d!@@#$%^&*]{8,}$/;
 
             if (!value) {
-                $errorSpan.text("Password is required");
+                        $errorSpan.text("Password is required").css("display","block");
                 input.setCustomValidity("Password is required");
             }
             else if (value.length < 6) {
-                $errorSpan.text("Password must be at least 6 characters");
+                        $errorSpan.text("Password must be at least 6 characters").css("display","block");
                 input.setCustomValidity("Password must be at least 6 characters");
             }
             else if (!letterPattern.test(value)) {
-                $errorSpan.html("Password must be at least 8 char long.<br>Include at least:<br>- One uppercase letter<br>- One lowercase letter<br>- One digit<br>- One special character (!@@#$%^&*).");
+                        $errorSpan.html(" 8 char_long, 1 upper, 1 lower, 1  digit,1 sp_char (!@@#$%^&*).").css("display","block");
                 input.setCustomValidity("Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one digit, and one special character (!@@#$%^&*).");
             }
             else {
-                $errorSpan.text("");
+                        $errorSpan.text("").css("display","block");
                 input.setCustomValidity("");
             }
 
@@ -1441,20 +1453,20 @@
             prepassword = $("#editPassword").val();
 
             if (!value) {
-                $errorSpan.text("Password is required");
+                        $errorSpan.text("Password is required").css("display","block");
                 input.setCustomValidity("Password is required");
             }
             else if (value.length < 6) {
-                $errorSpan.text("Password must be at least 6 characters");
+                        $errorSpan.text("Password must be at least 6 characters").css("display","block");
                 input.setCustomValidity("Password must be at least 6 characters");
             }
 
             else if (!(value === prepassword)) {
-                $errorSpan.html("Password and Confirm password must be same");
+                        $errorSpan.html("Password and Confirm password must be same").css("display","block");
                 input.setCustomValidity("Password and Confirm password must be same");
             }
             else {
-                $errorSpan.text("");
+                        $errorSpan.text("").css("display","none");
                 input.setCustomValidity("");
             }
 
@@ -1467,16 +1479,16 @@
 
 
             if (!value) {
-                $errorSpan.text("Address is required");
+                        $errorSpan.text("Address is required").css("display","block");
                 input.setCustomValidity("Address is required");
             }
             else if (value.length < 5) {
-                $errorSpan.text("Address must be at least 5 characters");
+                        $errorSpan.text("Address must be at least 5 characters").css("display","block");
                 input.setCustomValidity("Address must be at least 5 characters");
             }
 
             else {
-                $errorSpan.text("");
+                        $errorSpan.text("").css("display","none");
                 input.setCustomValidity("");
             }
 
