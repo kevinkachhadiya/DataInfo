@@ -1220,7 +1220,7 @@ namespace DataInfo.Controllers
                 {
                     _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-                    HttpResponseMessage result = await _httpClient.GetAsync("https://localhost:44367/api/Auth/GetDeatilsFromToken");
+                    HttpResponseMessage result = await _httpClient.GetAsync($"{_apiBaseUrl}/api/Auth/GetDeatilsFromToken");
                     string resultMessage = await result.Content.ReadAsStringAsync();
 
                     var jsonResult = JsonSerializer.Deserialize<UserData>(resultMessage, new JsonSerializerOptions
