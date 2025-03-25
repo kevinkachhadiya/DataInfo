@@ -351,6 +351,7 @@ namespace DataInfo.Controllers
                     };
                 }
             }
+            }
 
             [HttpGet]
             public async Task<IActionResult> UserDetailWebApi(int id)
