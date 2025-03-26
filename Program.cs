@@ -2,6 +2,15 @@ using DataInfo.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+//builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 
 builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -50,6 +59,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 var app = builder.Build();
 
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -57,21 +67,33 @@ if (!app.Environment.IsDevelopment())
     
 }
 
-app.UseHttpsRedirection();
 app.UseRouting();
-app.UseAuthorization();
+app.UseSession();
+app.UseAuthentication();  
+app.UseAuthorization(); 
+app.MapControllers();
 app.MapStaticAssets();
 
-string uploadsPath = Path.Combine(builder.Environment.ContentRootPath, "Uploads");
-if (!Directory.Exists(uploadsPath))
+app.Use(async (context, next) =>
 {
-    Directory.CreateDirectory(uploadsPath);
-}
 
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(uploadsPath),
-    RequestPath = "/Uploads"
+    var loginPath = "/Home/Login";
+    var currentPath = context.Request.Path.Value?.ToLower();
+
+
+    if (currentPath == loginPath.ToLower() || context.Request.Path.StartsWithSegments("/Uploads"))
+    {
+        await next(context);
+        return;
+    }
+    var authToken = context.Session.GetString("AuthToken") ?? "";
+    if (string.IsNullOrEmpty(authToken))
+    {
+
+        context.Response.Redirect(loginPath);
+       
+    }
+    await next(context);
 });
 
 app.MapControllerRoute(

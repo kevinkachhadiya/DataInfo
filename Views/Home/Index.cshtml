@@ -13,6 +13,11 @@
 
 }
 
+
+    <div role="status" id="spinner" style="display:none">
+        <span class="sr-only">Loading...</span>
+    </div>
+
 <div class="mt-4 table-container">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
@@ -22,12 +27,6 @@
         <button id="create_user" class="btn btn-primary btn-md  rounded-pill shadow-sm" data-bs-toggle="tooltip" title="Add a new user">
             <i class="fas fa-plus"></i> Create User
         </button>
-    </div>
-    <div id="loadingSpinner" class="text-center " style="display: none">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-        <p>Loading users...</p>
     </div>
 
 
@@ -757,6 +756,7 @@
 
    $("#CreateNewUser").on('submit', function (e) {
 
+           document.getElementById("spinner").css("display","block");
            e.preventDefault();
            var formData = new FormData(this);
 
@@ -775,7 +775,10 @@
 
                        $("#CreateModal form")[0].reset();
 
+
                        showAlert("User Created Successfully", type = "success", 1900);
+
+                                document.getElementById("spinner").css("display","none");
 
                        setTimeout(() => { window.location.reload(); }, 2000)
 
@@ -1395,11 +1398,11 @@ $.ajax({
             }
             else if (value.length < 10 || value.length > 10) {
                         $errorSpan.text(" M_No must be  10 Digits").css("display","block");
-                input.setCustomValidity(" M_No must be 10 digits");
+                        input.setCustomValidity(" M_No must be 10 digits");
             }
             else {
                         $errorSpan.text("").css("display","none");
-                input.setCustomValidity("");
+                        input.setCustomValidity("");
             }
         }
 

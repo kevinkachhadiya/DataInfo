@@ -119,4 +119,17 @@ namespace DataInfo.Models
         Female,
         Other
     }
+
+    public class ApiResponse
+    {
+        public DataWrapper Data { get; set; }
+        public string Token { get; set; } // Root-level token
+    }
+
+    public class DataWrapper
+    {
+        public UserData User { get; set; }
+        public string Token { get; set; } // Nested token inside data
+    }
+
 }

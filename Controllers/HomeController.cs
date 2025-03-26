@@ -2,24 +2,20 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using System.Text.Json;
 using DataInfo.Models;
-using System.Diagnostics;
 using System.Web.Mvc;
-
 namespace DataInfo.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Http;
     using System.Text;
     using System.Text.Json;
-    using Microsoft.Extensions.Hosting;
     using System.Diagnostics;
     using Microsoft.Extensions.Configuration;
-    using Supabase.Interfaces;
-    using Supabase.Gotrue;
+    using Microsoft.AspNetCore.Http.HttpResults;
+    using Newtonsoft.Json.Linq;
 
     namespace YourNamespace.Controllers
     {
-       
         public class HomeController : Controller 
         {
             private readonly ApplicationDbContext _applicationDbContext;
@@ -27,9 +23,6 @@ namespace DataInfo.Controllers
             private readonly HttpClient _httpClient;
             private readonly string _apiBaseUrl;
             private readonly Supabase.Client _supabaseClient;
-
-
-
             public HomeController(ApplicationDbContext applicationDbContext, IWebHostEnvironment env, IConfiguration configuration, IHttpClientFactory httpClientFactory, Supabase.Client supabaseClient)
             {
                 _applicationDbContext = applicationDbContext;
@@ -57,21 +50,40 @@ namespace DataInfo.Controllers
                         ? $"&order[0].column={order.Column}&order[0].dir={Uri.EscapeDataString(order.Dir)}"
                         : "";
 
+                    var jwttoken = HttpContext.Session.GetString("AuthToken")??"";
+
+                    HttpContext.Session.SetString("AuthToken", jwttoken);
+
+
+                    _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", jwttoken);
+
                     var url = $"{_apiBaseUrl}/api/Home/GetAll?draw={dataTableRequest.Draw}&start={dataTableRequest.Start}&length={dataTableRequest.Length}{searchQuery}{orderQuery}";
 
                     HttpResponseMessage response = await _httpClient.GetAsync(url);
+                    string jsonResponse = await response.Content.ReadAsStringAsync();
+                   
+                    
                     response.EnsureSuccessStatusCode();
 
-                    string jsonResponse = await response.Content.ReadAsStringAsync();
-                    var result = JsonSerializer.Deserialize<DataTableResponse>(jsonResponse, new JsonSerializerOptions
+                    var apiResult = JsonSerializer.Deserialize<DTable>(jsonResponse, new JsonSerializerOptions
                     {
                         PropertyNameCaseInsensitive = true
                     });
 
-                    string jsonResult = JsonSerializer.Serialize(result);
+                    DataTableResponse table = apiResult.Data;
+
+                    string newToken = apiResult.Token;
+
+                    string jsonContent = JsonSerializer.Serialize(table, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+
+                    Debug.WriteLine(jsonContent);
+
                     return new ContentResult
                     {
-                        Content = jsonResult,
+                        Content = jsonContent,
                         ContentType = "application/json",
                         StatusCode = 200
                     };
@@ -595,7 +607,6 @@ namespace DataInfo.Controllers
                 }
             }
 
-
             [HttpPost]
             public IActionResult ServerData( DataTableRequest dataTableRequest)
             {
@@ -746,39 +757,48 @@ namespace DataInfo.Controllers
                    
                         if (file != null && file.Length > 0)
                         {
-                            string fileName = Path.GetFileNameWithoutExtension(file.FileName);
-                            string extension = Path.GetExtension(file.FileName);
-                            string newFileName = fileName + "_" + Guid.NewGuid() + extension;
-                            string directoryPath = Path.Combine(_env.ContentRootPath, "Uploads");
+                        string fileName = Path.GetFileNameWithoutExtension(file.FileName);
+                        string extension = Path.GetExtension(file.FileName);
+                        string newFileName = fileName + "_" + Guid.NewGuid() + extension;
 
-                            if (!Directory.Exists(directoryPath))
+                        var allowedExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { ".JPG", ".JPEG" };
+                        if (allowedExtensions.Contains(extension))
+                        {
+                            // Upload to Supabase Storage
+                            var storage = _supabaseClient.Storage.From("user-images");
+
+                            Debug.WriteLine(storage);
+
+                            using var memoryStream = new MemoryStream();
+                            await file.CopyToAsync(memoryStream);
+                            memoryStream.Position = 0;
+
+                            // Convert MemoryStream to byte[]
+                            byte[] fileBytes = memoryStream.ToArray();
+
+                            var uploadResponse = await storage.Upload(fileBytes, newFileName);
+
+                            if (uploadResponse != null)
                             {
-                                Directory.CreateDirectory(directoryPath);
-                            }
-
-                            string filePath = Path.Combine(directoryPath, newFileName);
-
-                            if (extension.ToUpper() == ".JPG" || extension.ToUpper() == ".JPEG" || extension.ToUpper() == ".PNG")
-                            {
-                                using (var stream = new FileStream(filePath, FileMode.Create))
-                                {
-                                    await file.CopyToAsync(stream);
-                                }
-                                user.ImagePath = newFileName;
+                                user.ImagePath = storage.GetPublicUrl(newFileName);
                             }
                             else
                             {
-                                ModelState.AddModelError("", "Invalid file format");
-                                PopulateSelectLists(user);
-                                string errorJson = JsonSerializer.Serialize(new { success = false, message = "Invalid file format" });
-                                return new ContentResult
-                                {
-                                    Content = errorJson,
-                                    ContentType = "application/json",
-                                    StatusCode = 200
-                                };
+                                return Json(new { success = false, message = "Failed to upload image to storage" });
                             }
-                      
+                        }
+
+                        else
+                        {
+                            string errorJson = JsonSerializer.Serialize(new { success = false, message = "FileError Invalid file format. Only JPG, JPEG are allowed." });
+                            return new ContentResult
+                            {
+                                Content = errorJson,
+                                ContentType = "application/json",
+                                StatusCode = 200
+                            };
+                        }
+
 
                         var uniqueEmail = !_applicationDbContext.Users
                             .Any(c => c.Email == user.Email && c.user_id != user.user_id);
@@ -827,6 +847,7 @@ namespace DataInfo.Controllers
                         };
                     }
                 }
+
                 catch (Exception ex)
                 {
                     ModelState.AddModelError("Invalid file format", ex.Message);
@@ -865,44 +886,58 @@ namespace DataInfo.Controllers
                     var oldEmail = editUser.Email;
                     var oldPhoneNumber = editUser.MobileNo;
 
-                  
-                        if (file != null && file.Length > 0)
+
+                    if (file != null && file.Length > 0)
+                    {
+                        string fileName = Path.GetFileNameWithoutExtension(file.FileName);
+                        string extension = Path.GetExtension(file.FileName);
+                        string newFileName = fileName + "_" + Guid.NewGuid() + extension;
+
+                        var allowedExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { ".JPG", ".JPEG" };
+                        if (allowedExtensions.Contains(extension))
                         {
-                            string fileName = Path.GetFileNameWithoutExtension(file.FileName);
-                            string extension = Path.GetExtension(file.FileName);
-                            string newFileName = fileName + "_" + Guid.NewGuid() + extension;
-                            string directoryPath = Path.Combine(_env.ContentRootPath, "Uploads");
+                            
+                            var storage = _supabaseClient.Storage.From("user-images");
 
-                            if (!Directory.Exists(directoryPath))
-                            {
-                                Directory.CreateDirectory(directoryPath);
-                            }
+                        
+                            using var memoryStream = new MemoryStream();
+                            await file.CopyToAsync(memoryStream);
+                            memoryStream.Position = 0;
 
-                            string filePath = Path.Combine(directoryPath, newFileName);
-                            var allowedExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { ".JPG", ".JPEG" };
-                            if (allowedExtensions.Contains(extension))
+                            // Convert MemoryStream to byte[]
+                            byte[] fileBytes = memoryStream.ToArray();
+
+                            var uploadResponse = await storage.Upload(fileBytes, newFileName);
+
+                            if (uploadResponse != null)
                             {
-                                using (var stream = new FileStream(filePath, FileMode.Create))
-                                {
-                                    await file.CopyToAsync(stream);
-                                }
-                                editUser.ImagePath = newFileName;
+                                editUser.ImagePath = storage.GetPublicUrl(newFileName);
                             }
                             else
                             {
-                                ModelState.AddModelError("FileError", "Invalid file format. Only JPG, JPEG are allowed.");
-                                PopulateSelectLists(user);
-                                string errorJson = JsonSerializer.Serialize(new { success = false, message = "FileError Invalid file format. Only JPG, JPEG are allowed." });
-                                return new ContentResult
-                                {
-                                    Content = errorJson,
-                                    ContentType = "application/json",
-                                    StatusCode = 200
-                                };
+                                return Json(new { success = false, message = "Failed to upload image to storage" });
                             }
                         }
 
-                        editUser.user_id = user.user_id;
+
+                        else
+                        {
+                            ModelState.AddModelError("FileError", "Invalid file format. Only JPG, JPEG are allowed.");
+                            string errorJson = JsonSerializer.Serialize(new { success = false, message = "FileError Invalid file format. Only JPG, JPEG are allowed." });
+                            return new ContentResult
+                            {
+                                Content = errorJson,
+                                ContentType = "application/json",
+                                StatusCode = 200
+                            };
+                        }
+                    }
+                    else
+                    {
+                        editUser.ImagePath = "notuploaded";
+                    }
+
+                    editUser.user_id = user.user_id;
                         editUser.FirstName = user.FirstName;
                         editUser.LastName = user.LastName;
                         editUser.Email = user.Email;
@@ -1136,7 +1171,6 @@ namespace DataInfo.Controllers
             public async Task<IActionResult> UserLogin([FromBody] Login login)
             {
 
-
                 try
                 {
                     string json = JsonSerializer.Serialize(login);
@@ -1146,20 +1180,22 @@ namespace DataInfo.Controllers
                     string responseMessage = await response.Content.ReadAsStringAsync();
 
 
-                    Debug.WriteLine(responseMessage);
+                    
                     if (response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
 
                         string token = JsonDocument.Parse(responseMessage).RootElement.GetProperty("token").GetString() ?? "N/A";
 
-                        string successJson = JsonSerializer.Serialize(new { success = true, message = token });
+                        HttpContext.Session.SetString("AuthToken",token);
+
+                        string successJson = JsonSerializer.Serialize(new { success = true  });
+                        
                         return new ContentResult
                         {
                             Content = successJson,
                             ContentType = "application/json",
                             StatusCode = 200
                         };
-
                     }
                     else 
                     {
@@ -1188,24 +1224,19 @@ namespace DataInfo.Controllers
             }
 
             [HttpPost]
-            public async Task<IActionResult> ValidToken( string token)
+            public async Task<IActionResult> ValidToken()
             {
                 try
                 {
+                    var jwttoken = HttpContext.Session.GetString("AuthToken");
 
-                    string json = JsonSerializer.Serialize(token);
+                    string json = JsonSerializer.Serialize(jwttoken);
+
                     HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
                     HttpResponseMessage response = await _httpClient.PostAsync($"{_apiBaseUrl}/api/Auth/validate-token", content);
 
                     string responsemessage = await response.Content.ReadAsStringAsync();
-
-
-
-                    Debug.WriteLine(token);
-                    Debug.WriteLine(token);
-
-
 
                     if (response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
@@ -1241,25 +1272,34 @@ namespace DataInfo.Controllers
             }
 
             [HttpGet]
-            public async Task<IActionResult> GetDetailsFromToken(string token)
+            public async Task<IActionResult> GetDetailsFromToken()
             {
                 try
                 {
-                    _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-                    HttpResponseMessage result = await _httpClient.GetAsync($"{_apiBaseUrl}/api/Auth/GetDeatilsFromToken");
+                  var jwttoken =   HttpContext.Session.GetString("AuthToken");
+
+
+                    _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", jwttoken);
+
+                    HttpResponseMessage result = await _httpClient.GetAsync($"{_apiBaseUrl}/api/Home/GetDeatilsFromToken");
                     string resultMessage = await result.Content.ReadAsStringAsync();
 
-                    var jsonResult = JsonSerializer.Deserialize<UserData>(resultMessage, new JsonSerializerOptions
+                    var jsonResult = JsonSerializer.Deserialize<ApiResponse>(resultMessage, new JsonSerializerOptions
                     {
                         PropertyNameCaseInsensitive = true
                     });
 
-                    Debug.WriteLine(JsonSerializer.Serialize(jsonResult));
+                    UserData user = jsonResult.Data.User;
+                    
+                    string Jwttoken = jsonResult.Token;
+
+                    HttpContext.Session.SetString("AuthToken",Jwttoken);
+
 
                     if (result.IsSuccessStatusCode)
                     {
-                        string successJson = JsonSerializer.Serialize(new { success = true, message = jsonResult });
+                        string successJson = JsonSerializer.Serialize(new { success = true, message = user });
                         return new ContentResult
                         {
                             Content = successJson,
@@ -1289,9 +1329,7 @@ namespace DataInfo.Controllers
                     };
                 }
             }
+        
         }
-
-
-
     }
 }

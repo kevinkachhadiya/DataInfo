@@ -348,13 +348,9 @@ input:focus ~ .label2, input:not(:placeholder-shown) ~ .label2 {
 
 <script>
     $(document).ready(function () {
-
-        var jwtToken = localStorage.getItem('AuthToken');
-
         $.ajax({
             url: '@Url.Action("validtoken", "Home")',
             type: 'POST',
-            data: {Token:jwtToken },
             success: function (response) {
 
                 if (response.success) {
@@ -369,11 +365,10 @@ input:focus ~ .label2, input:not(:placeholder-shown) ~ .label2 {
 
                         url: '@Url.Action("GetDetailsFromToken","Home")',
                         type: 'GET',
-                        data: { Token: jwtToken },
                         success: function (response) {
                             if (response.success)
                             {
-                                $("#imagePreview").attr("src", "/Uploads/" + response.message.ImagePath);
+                                $("#imagePreview").attr("src", response.message.ImagePath);
                                     $("#fname_").val(response.message.FirstName);
                                     $("#lname_").val(response.message.LastName);
                                     $("#email_").val(response.message.Email);
@@ -397,7 +392,7 @@ input:focus ~ .label2, input:not(:placeholder-shown) ~ .label2 {
                 {
                     $(".register-form").css("display", "none");
 
-                    localStorage.setItem('AuthToken', "");
+                  
 
                    
                 }
@@ -421,11 +416,11 @@ input:focus ~ .label2, input:not(:placeholder-shown) ~ .label2 {
 
             event.preventDefault();
 
-            localStorage.setItem("AuthToken", "")
+         
 
-            showAlert("Token is removed from Local storage", "danger", 1900);
+            showAlert("This Service is under maintaince", "danger", 1900);
 
-            setTimeout(() => { window.location.reload() }, 1900);
+           // setTimeout(() => { window.location.reload() }, 1900);
 
 
         });
@@ -453,7 +448,6 @@ input:focus ~ .label2, input:not(:placeholder-shown) ~ .label2 {
 
                     if (response.success) {
 
-                        localStorage.setItem('AuthToken', response.message);
 
                         const loginContainer = document.querySelector('.login-container');
                         loginContainer.classList.add('hidden');

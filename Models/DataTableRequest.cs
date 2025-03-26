@@ -29,3 +29,11 @@ public class DataTableResponse
     public int recordsFiltered { get; set; }
     public List<UserData> data { get; set; }
 }
+
+
+public class DTable
+{
+    public DataTableResponse Data { get; set; } 
+    public string Token { get; set; }          
+}
+

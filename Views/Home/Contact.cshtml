@@ -571,7 +571,7 @@
     { "targets": [5], "data": "Gender_", "className": "text-center dt-center", },
     { "targets": [6], "data": "Dob", "className": "text-center dt-center"},
     { "targets": [7], "data": "Address", "render": function (data, type, row) { return type === 'display' && data.length > 10 ? '<span title="' + data + '">' + data.substring(0, 12) + '</span>' : data; }, "className": "text-center dt-center",  },
-    { "targets": [8], "data": "ImagePath", "render": function (data, type, row, meta) { return data && data.trim() !== "" ? '<img src="/Uploads/' + data + '" alt="User Image" class="img-thumbnail rounded-circle shadow-sm" style="max-width: 50px; max-height: 50px;" />' : '<span class="text-muted">No image</span>'; }, "className": "text-center dt-center ps-1", "orderable": false },
+    { "targets": [8], "data": "ImagePath", "render": function (data, type, row, meta) { return data && data.trim() !== "" ? '<img src="'+data+'" alt="User Image" class="img-thumbnail rounded-circle shadow-sm" style="max-width: 60px; max-height: 60px;" />' : '<span class="text-muted">No image</span>'; }, "className": "text-center", "orderable": false },
     { "targets": [9], "data": "selectedCity", "render": function (data, type, row) { return type === 'display' && data.length > 12 ? '<span title="' + data + '">' + data.substring(0, 12) + '...</span>' : data; }, "className": "text-center dt-center", },
     { "targets": [10], "data": "selectedState", "render": function (data, type, row) { return type === 'display' && data.length > 12 ? '<span title="' + data + '">' + data.substring(0, 12) + '...</span>' : data; }, "className": "text-center dt-center",  },
     { "targets": [11], "data": "SelectedCountry", "render": function (data, type, row) { return type === 'display' && data.length > 9 ? '<span title="' + data + '">' + data.substring(0, 9) + '...</span>' : data; }, "className": "text-center dt-center",  },
@@ -620,14 +620,14 @@
     },
     "columns": [
         { "data": null, width: "5%" },
-        { "data": "FirstName", width: "10%" },
-        { "data": "LastName", width: "10%"  },
+        { "data": "FirstName", width: "7%" },
+        { "data": "LastName", width: "7%"  },
         { "data": "Email", width: "15%" },
         { "data": "MobileNo", width: "10%" },
         { "data": "Gender_", width: "5%" },
         { "data": "Dob", width: "10%" },
         { "data": "Address", width: "12%" },
-        { "data": "ImagePath", width: "8%" },
+        { "data": "ImagePath", width: "14%" },
         { "data": "selectedCity", width: "5%"  },
         { "data": "selectedState", width: "5%" },
         { "data": "SelectedCountry",width: "5%" },
@@ -924,10 +924,7 @@
                             $("#editstate").val(response.message.SelectedStateId);
                             $("#editCity").val(response.message.SelectedCityId);
 
-                            $("#edit_image").attr("src", "/Uploads/" + response.message.ImagePath.toString());
-
-
-
+                            $("#edit_image").attr("src",response.message.ImagePath.toString());
                             $("#user_id").val(response.message.user_id)
 
 
@@ -1080,7 +1077,7 @@
                 var user = response.message;
 
                 // Update image
-                $("#dImage").attr("src", user.ImagePath ? "/Uploads/" + user.ImagePath : "/images/default-avatar.png");
+                $("#dImage").attr("src", user.ImagePath ?  user.ImagePath : "/images/default-avatar.png");
 
                 // Update text content
                 $("#fullname").text(user.FirstName + " " + user.LastName);

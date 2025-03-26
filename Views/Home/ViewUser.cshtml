@@ -58,7 +58,7 @@
                     <td>@Html.DisplayFor(modelItem => Modelitem.Dob)</td>
                     <td>@Html.DisplayFor(modelItem => Modelitem.Address)</td>
                     <td>
-                        <img src="@Url.Content("~/Uploads/" + Modelitem.ImagePath)"
+                        <img src="@Url.Content(Modelitem.ImagePath)"
                              alt="User Image"
                              class="img-fluid rounded-circle shadow-sm"
                              style="width: 40px; height: 40px; object-fit: cover;"
@@ -761,7 +761,7 @@
                 $("#editstate").val(response.message.SelectedStateId);
                 $("#editCity").val(response.message.SelectedCityId);
 
-                $("#edit_image").attr("src", "/Uploads/" + response.message.ImagePath.toString());
+                $("#edit_image").attr("src", response.message.ImagePath.toString());
 
 
 
@@ -896,7 +896,7 @@
                 var user = response.message;
 
                 // Update image
-                $("#dImage").attr("src", user.ImagePath ? "/Uploads/" + user.ImagePath : "/images/default-avatar.png");
+                $("#dImage").attr("src", user.ImagePath ?  user.ImagePath : "/images/default-avatar.png");
 
                 // Update text content
                 $("#fullname").text(user.FirstName + " " + user.LastName);
