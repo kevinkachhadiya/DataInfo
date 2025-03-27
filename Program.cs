@@ -9,9 +9,11 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(
         policy =>
         {
-            policy.WithOrigins("https://task2-rzvm.onrender.com",
-                                "https://datainfo-9w7m.onrender.com",
-                                "https://localhost:44387");
+            policy.WithOrigins("https://task2-rzvm.onrender.com/",
+                                "https://datainfo-9w7m.onrender.com/",
+                                "https://localhost:44387/")
+                             .AllowAnyMethod()
+                             .AllowAnyHeader();
         });
 });
 
