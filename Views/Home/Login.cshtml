@@ -352,17 +352,12 @@ input:focus ~ .label2, input:not(:placeholder-shown) ~ .label2 {
             url: '@Url.Action("validtoken", "Home")',
             type: 'POST',
             success: function (response) {
-
                 if (response.success) {
-
                     const loginContainer = document.querySelector('.login-container');
                     loginContainer.classList.add('hidden');
-
                     $(".register-form").css("display", "");
                     loginContainer.style.display = 'none';
-
                     $.ajax({
-
                         url: '@Url.Action("GetDetailsFromToken","Home")',
                         type: 'GET',
                         success: function (response) {
@@ -372,7 +367,6 @@ input:focus ~ .label2, input:not(:placeholder-shown) ~ .label2 {
                                     $("#fname_").val(response.message.FirstName);
                                     $("#lname_").val(response.message.LastName);
                                     $("#email_").val(response.message.Email);
-                                  
                                     $("#mobile_").val(response.message.MobileNo);
                                     $("#addr_").val(response.message.Address);
                                     $("#dob_").val(response.message.Dob);
@@ -381,48 +375,46 @@ input:focus ~ .label2, input:not(:placeholder-shown) ~ .label2 {
                                    $("#City_").val(response.message.selectedCity);
 
                                 }
-
-
                             }
-                        
                     });
-
                 }
                 else
                 {
                     $(".register-form").css("display", "none");
 
-                  
-
-                   
                 }
 
             }
-
         });
 
-       
     });
 
     $(document).ready(function () {
 
-
         document.body.appendChild(globalAlertContainer);
-
-
-        
 
         $(".register-form").on("submit", function (event) {
 
             event.preventDefault();
-
-         
-
-            showAlert("This Service is under maintaince", "danger", 1900);
-
-           // setTimeout(() => { window.location.reload() }, 1900);
-
-
+            $.ajax({
+                url:'@Url.Action("DeleteToken","Home")',
+                type:'DELETE',
+                contentType: "application/json",
+                success: function(response)
+                {
+                     if(response.success)
+                  {
+                      console.log("Successfully deleted");
+                        showAlert(response.message, "success", 1900);
+                        setTimeout(() => { window.location.reload() }, 1900);
+                  }
+                  else
+                  {
+                     console.log("not deleted");
+                     showAlert(response.message, "danger", 1900);
+                  }
+                }
+            });
         });
 
         $(".login-form").on("submit", function (event) {

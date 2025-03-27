@@ -1,6 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
-using System.Text;
-using System.Text.Json;
 using DataInfo.Models;
 using System.Web.Mvc;
 namespace DataInfo.Controllers
@@ -11,8 +8,6 @@ namespace DataInfo.Controllers
     using System.Text.Json;
     using System.Diagnostics;
     using Microsoft.Extensions.Configuration;
-    using Microsoft.AspNetCore.Http.HttpResults;
-    using Newtonsoft.Json.Linq;
 
     namespace YourNamespace.Controllers
     {
@@ -348,6 +343,23 @@ namespace DataInfo.Controllers
                         StatusCode = 500
                     };
                 }
+            }
+
+            [HttpDelete]
+            public async Task<IActionResult> DeleteToken()
+            {
+
+                 
+                string successJson = JsonSerializer.Serialize(new { success = true, message = "Logout Successfully"});
+               
+                HttpContext.Session.SetString("AuthToken","");
+
+                return new ContentResult
+                {
+                    Content = successJson,
+                    ContentType = "application/json",
+                    StatusCode = 200
+                };
             }
 
             [HttpPost]
