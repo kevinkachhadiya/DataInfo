@@ -353,6 +353,7 @@ input:focus ~ .label2, input:not(:placeholder-shown) ~ .label2 {
             type: 'POST',
             success: function (response) {
                 if (response.success) {
+
                     const loginContainer = document.querySelector('.login-container');
                     loginContainer.classList.add('hidden');
                     $(".register-form").css("display", "");
@@ -402,10 +403,10 @@ input:focus ~ .label2, input:not(:placeholder-shown) ~ .label2 {
                 contentType: "application/json",
                 success: function(response)
                 {
-                     if(response.success)
+                      if(response.success)
                   {
-                      console.log("Successfully deleted");
-                        showAlert(response.message, "success", 1900);
+                        console.log("Successfully deleted");
+                        showAlert(response.message, "danger", 1900);
                         setTimeout(() => { window.location.reload() }, 1900);
                   }
                   else

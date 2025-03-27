@@ -4,6 +4,17 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 //builder.Services.AddDistributedMemoryCache();
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+        policy =>
+        {
+            policy.WithOrigins("https://task2-rzvm.onrender.com",
+                                "https://datainfo-9w7m.onrender.com",
+                                "https://localhost:44387");
+        });
+});
+
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -68,6 +79,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseRouting();
+app.UseCors();
 app.UseSession();
 app.UseAuthentication();  
 app.UseAuthorization(); 
