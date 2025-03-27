@@ -1182,57 +1182,77 @@ namespace DataInfo.Controllers
             [HttpPost]
             public async Task<IActionResult> UserLogin([FromBody] Login login)
             {
+                const int maxRetries = 3; // Retry up to 3 times
+                const int delayMs = 6000; // Wait 2 seconds between retries
 
-                try
+                for (int attempt = 0; attempt < maxRetries; attempt++)
                 {
-                    string json = JsonSerializer.Serialize(login);
-                    HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                    HttpResponseMessage response = await _httpClient.PostAsync($"{_apiBaseUrl}/api/Auth/Login", content);
-                    string responseMessage = await response.Content.ReadAsStringAsync();
-
-
-                    
-                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                    try
                     {
+                        string json = JsonSerializer.Serialize(login);
+                        HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                        string token = JsonDocument.Parse(responseMessage).RootElement.GetProperty("token").GetString() ?? "N/A";
+                        HttpResponseMessage response = await _httpClient.PostAsync($"{_apiBaseUrl}/api/Auth/Login", content);
+                        string responseMessage = await response.Content.ReadAsStringAsync();
 
-                        HttpContext.Session.SetString("AuthToken",token);
+                        if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                        {
+                            string token = JsonDocument.Parse(responseMessage).RootElement.GetProperty("token").GetString() ?? "N/A";
+                            HttpContext.Session.SetString("AuthToken", token);
 
-                        string successJson = JsonSerializer.Serialize(new { success = true  });
-                        
+                            string successJson = JsonSerializer.Serialize(new { success = true });
+                            return new ContentResult
+                            {
+                                Content = successJson,
+                                ContentType = "application/json",
+                                StatusCode = 200
+                            };
+                        }
+                        else
+                        {
+                            string successJson = JsonSerializer.Serialize(new { success = false, message = responseMessage });
+                            return new ContentResult
+                            {
+                                Content = successJson,
+                                ContentType = "application/json",
+                                StatusCode = 200
+                            };
+                        }
+                    }
+                    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.BadGateway ||
+                                                          ex.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
+                    {
+                        Debug.WriteLine($"Attempt {attempt + 1} failed: {ex.Message}");
+                        if (attempt < maxRetries - 1) // Don’t delay on the last attempt
+                        {
+                            await Task.Delay(delayMs);
+                            continue; // Retry
+                        }
+
+                        // If all retries fail
+                        string errorJson = JsonSerializer.Serialize(new { success = false, message = "Service unavailable after retries" });
                         return new ContentResult
                         {
-                            Content = successJson,
+                            Content = errorJson,
                             ContentType = "application/json",
-                            StatusCode = 200
+                            StatusCode = 503 // Service Unavailable
                         };
                     }
-                    else 
+                    catch (Exception e)
                     {
-                        string successJson = JsonSerializer.Serialize(new { success = false, message = responseMessage });
+                        Debug.WriteLine(e);
+                        string errorJson = JsonSerializer.Serialize(new { success = false, message = "Some error occurred" });
                         return new ContentResult
                         {
-                            Content = successJson,
+                            Content = errorJson,
                             ContentType = "application/json",
-                            StatusCode = 200
+                            StatusCode = 500
                         };
-
                     }
-                   
                 }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(e);
-                    string errorJson = JsonSerializer.Serialize(new { success = false, message = "Some error occurred" });
-                    return new ContentResult
-                    {
-                        Content = errorJson,
-                        ContentType = "application/json",
-                        StatusCode = 500
-                    };
-                }
+
+                // This line is technically unreachable, but added for completeness
+                return StatusCode(500, "Unexpected error");
             }
 
             [HttpPost]
