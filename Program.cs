@@ -91,7 +91,8 @@ app.UseRouting();
 app.UseCors();
 app.UseSession();
 app.UseAuthentication();  
-app.UseAuthorization(); 
+app.UseAuthorization();
+app.UseStaticFiles();
 app.MapControllers();
 app.MapStaticAssets();
 
