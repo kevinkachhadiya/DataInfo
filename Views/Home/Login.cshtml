@@ -5,7 +5,10 @@
 
 <div class="login-container">
     <form class="login-form">
+
+        <h4 claass="" style="max-width:100%; margin-bottom: 20px;"> Login </h4>
         <div class="form-group">
+           
             <input type="text" onkeyup="UserName(this)" style="max-width:100%" required>
             <label class="label1" id="uname">Username</label>
         </div>
@@ -19,10 +22,12 @@
 
 <div class="">
     <form class="register-form">
-
-        <div class="form-group" style="align-items:center">
-            <label  class="label2" style=" top: -8px; left: 133px;">Profile Image</label>
-            <img id="imagePreview" src="" alt="Image Preview" style="display: block; max-width: 250px; margin-top: 10px;">
+        <h4 claass="" style="max-width:100%; margin-bottom: 20px;"> User Details </h4>
+     
+        <div class="form-group" style="text-align: center;">
+            <label class="" style="display: block; margin-bottom: 10px;">Profile Image</label>
+            <img id="imagePreview" src="" class="card-img-top rounded-circle mx-auto d-block mt-3
+" alt="Image Preview" style=" width: 184px; height: 182px;object-fit: cover; margin: 10px auto;border: 4px solid #fff;">
         </div>
 
         <div class="form-group" >
@@ -64,286 +69,222 @@
         </div>
 
 
-        <button type="submit" id="button2">Reset</button>
+        <button type="submit" id="button2">Logout</button>
 
     </form>
 </div>
-
 <style>
+    :root {
+        /* Light Theme */
+        --light-bg: #ffffff;
+        --light-text: #213547;
+        --light-primary: #1976d2;
+        --light-primary-hover: #1565c0;
+        --light-border: rgba(0, 0, 0, 0.23);
+        --light-label: rgba(0, 0, 0, 0.6);
+        --light-input-bg: transparent;
+        --light-error: #d32f2f;
+        --light-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
+        /* Dark Theme */
+        --dark-bg: #121212;
+        --dark-text: rgba(255, 255, 255, 0.87);
+        --dark-primary: #90caf9;
+        --dark-primary-hover: #64b5f6;
+        --dark-border: rgba(255, 255, 255, 0.23);
+        --dark-label: rgba(255, 255, 255, 0.6);
+        --dark-input-bg: rgba(255, 255, 255, 0.05);
+        --dark-error: #f44336;
+        --dark-shadow: 0px 2px 1px -1px rgba(0,0,0,0.5), 0px 1px 1px 0px rgba(0,0,0,0.3), 0px 1px 3px 0px rgba(0,0,0,0.25);
+    }
 
-body {
-    background: linear-gradient(135deg, #e9ecef, #dee2e6);
-    font-family: 'Segoe UI', Arial, sans-serif;
-    margin: 0; /* Ensure no default margin */
-    min-height: 100vh; /* Full viewport height */
-}
+    body {
+        background-color: var(--light-bg);
+        color: var(--light-text);
+        font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
+        margin: 0;
+        transition: background-color 0.3s, color 0.3s;
+        min-height: 100vh;
+    }
 
-/* Container Styling */
-.login-container, .register-form {
-    background: white;
-    padding: 2rem;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    backdrop-filter: blur(10px);
-    width: 100%;
-    max-width: 450px;
-    margin: 1rem auto;
-    transition: all 0.4s ease;
-    /* Scroll-driven animation */
-    animation: slideUp 0.8s ease-out;
-    animation-timeline: scroll();
-    animation-range: 0 150px;
-}
+        body.dark {
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+        }
 
-.login-container.hidden {
-    opacity: 0;
-    transform: scale(0.95);
-}
-
-/* Form Styling */
-.login-form, .register-form {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-}
-
-/* Form Group */
-.form-group {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-/* Inputs */
-input {
-    width: 100%;
-    padding: 12px 10px;
-    border: none;
-    border-bottom: 2px solid rgba(0, 0, 0, 0.3);
-    background: transparent;
-    font-size: 1rem;
-    color: black;
-    transition: border-bottom 0.3s ease, box-shadow 0.3s ease;
-    will-change: transform, border-bottom; /* Optimize for animation */
-}
-
-input:focus {
-    outline: none;
-    border-bottom: 2px solid #007bff;
-    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2);
-    animation: glow 0.6s ease-in-out infinite alternate; /* Latest glow effect */
-}
-
-input::placeholder {
-    color: transparent;
-}
-
-input[readonly] {
-    background: rgba(240, 240, 240, 0.4);
-    cursor: not-allowed;
-    color: #666;
-}
-
-/* Labels */
-.label1, .label2 {
-    position: absolute;
-    top: 50%;
-    left: 10px;
-    transform: translateY(-50%);
-    font-size: 1rem;
-    color: rgba(0, 0, 0, 0.6);
-    pointer-events: none;
-    transition: all 0.3s ease;
-}
-
-input:focus ~ .label1, input:not(:placeholder-shown) ~ .label1,
-input:focus ~ .label2, input:not(:placeholder-shown) ~ .label2 {
-        top: -13px;
-    left: 0;
-    font-size: 0.85rem;
-    color: #007bff;
-    animation: labelPop 0.2s ease-out; /* Subtle pop effect */
-}
-
-/* Specific Label Adjustments */
-.label2[for="imageUpload"] {
-    position: static;
-    transform: none;
-    font-size: 1.1rem;
-    color: #333;
-    margin-bottom: 10px;
-}
-
-/* Error */
-.error {
-    color: orangered;
-    font-size: 0.8rem;
-    max-width: 100%;
-    white-space: normal;
-}
-
-/* Buttons */
-#button1, #button2 {
-    padding: 12px;
-    background: #007bff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 600;
-    color: white;
-    transition: background 0.3s ease, transform 0.2s ease;
-    width: 100%;
-    will-change: transform; /* Optimize hover animation */
-}
-
-#button1:hover, #button2:hover {
-    background: #0056d2;
-    transform: translateY(-2px) scale(1.02); /* Enhanced hover */
-    animation: buttonPulse 0.4s ease; /* Subtle pulse */
-}
-
-/* Image Preview */
-#imagePreview {
-    display: block;
-    max-width: 200px;
-    margin: 10px auto 0;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px white;
-    opacity: 0; /* Hidden by default */
-    transition: opacity 0.3s ease;
-}
-
-/* Show image with animation when loaded */
-#imagePreview[src]:not([src=""]) {
-    opacity: 1;
-    animation: fadeIn 0.5s ease-out;
-}
-
-/* Dark Mode */
-.dark body {
-    background: linear-gradient(135deg, #343a40, #495057);
-}
-
-.dark .login-container, .dark .register-form {
-    background: rgba(0, 0, 0, 0.25);
-    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.05);
-}
-
-.dark input {
-    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
-    color: #e9ecef;
-}
-
-.dark input:focus {
-    border-bottom: 2px solid #66b0ff;
-    box-shadow: 0 2px 8px rgba(102, 176, 255, 0.2);
-    animation: glowDark 0.6s ease-in-out infinite alternate;
-}
-
-.dark input[readonly] {
-    background: rgba(80, 80, 80, 0.4);
-    color: #adb5bd;
-}
-
-.dark .label1, .dark .label2 {
-    color: rgba(255, 255, 255, 0.6);
-}
-
-.dark input:focus ~ .label1, .dark input:not(:placeholder-shown) ~ .label1,
-.dark input:focus ~ .label2, .dark input:not(:placeholder-shown) ~ .label2 {
-    color: #66b0ff;
-}
-
-.dark .label2[for="imageUpload"] {
-    color: #e9ecef;
-}
-
-.dark #button1, .dark #button2 {
-    background: #66b0ff;
-}
-
-.dark #button1:hover, .dark #button2:hover {
-    background: #4d94ff;
-}
-
-/* Keyframes for Animations */
-@@keyframes slideUp {
-    from { opacity: 1; transform: translateY(50px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@@keyframes glow {
-    from { box-shadow: 0 0 5px rgba(0, 123, 255, 0.3); }
-    to { box-shadow: 0 0 12px rgba(0, 123, 255, 0.6); }
-}
-
-@@keyframes glowDark {
-    from { box-shadow: 0 0 5px rgba(102, 176, 255, 0.3); }
-    to { box-shadow: 0 0 12px rgba(102, 176, 255, 0.6); }
-}
-
-@@keyframes labelPop {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(-12px); }
-    100% { transform: translateY(-8px); }
-}
-
-@@keyframes buttonPulse {
-    0% { transform: translateY(-2px) scale(1.02); }
-    50% { transform: translateY(-2px) scale(1.05); }
-    100% { transform: translateY(-2px) scale(1.02); }
-}
-
-@@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@@media (max-width: 768px) {
+    /* Form Components */
     .login-container, .register-form {
-        padding: 2rem;
-        max-width: 380px;
+        margin: 20px auto;
+        max-width: 500px;
+        background: var(--light-bg);
+        padding: 24px;
+        border-radius: 8px;
+        box-shadow: var(--light-shadow);
+        transition: all 0.3s;
     }
+
+    .dark .login-container,
+    .dark .register-form {
+        background: var(--dark-bg);
+        box-shadow: var(--dark-shadow);
+    }
+
+    .form-group {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+
     input {
-        font-size: 0.95rem;
+        width: 100%;
+        padding: 12px 12px 6px 12px;
+        border: 1px solid var(--light-border);
+        border-radius: 4px;
+        background-color: var(--light-input-bg);
+        font-size: 1rem;
+        color: var(--light-text);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
+
+    .dark input {
+        border-color: var(--dark-border);
+        background-color: var(--dark-input-bg);
+        color: var(--dark-text);
+    }
+
+    input:focus {
+        outline: none;
+        border-color: var(--light-primary);
+        border-width: 2px;
+        padding: 11px 11px 5px 11px;
+        box-shadow: 0 0 0 1px var(--light-primary);
+    }
+
+    .dark input:focus {
+        border-color: var(--dark-primary);
+        box-shadow: 0 0 0 1px var(--dark-primary);
+    }
+
     .label1, .label2 {
-        font-size: 0.9rem;
+        position: absolute;
+        top: 16px;
+        left: 12px;
+        font-size: 1rem;
+        color: var(--light-label);
+        background-color: var(--light-bg);
+        padding: 0 4px;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        transform-origin: left top;
+        pointer-events: none;
     }
+
+    .dark .label1,
+    .dark .label2 {
+        color: var(--dark-label);
+        background-color: var(--dark-bg);
+    }
+
+    input:focus ~ .label1,
+    input:not(:placeholder-shown) ~ .label1,
+    input:focus ~ .label2,
+    input:not(:placeholder-shown) ~ .label2 {
+        transform: translateY(-50%) scale(0.75);
+        color: var(--light-primary);
+        top: 0;
+        left: 8px;
+    }
+
+    .dark input:focus ~ .label1,
+    .dark input:not(:placeholder-shown) ~ .label1,
+    .dark input:focus ~ .label2,
+    .dark input:not(:placeholder-shown) ~ .label2 {
+        color: var(--dark-primary);
+    }
+
+    /* Buttons */
     #button1, #button2 {
-        font-size: 0.95rem;
+        position: relative;
+        overflow: hidden;
+        padding: 10px 16px;
+        background-color: var(--light-primary);
+        border: none;
+        border-radius: 4px;
+        color: white;
+        font-size: 0.875rem;
+        font-weight: 500;
+        letter-spacing: 0.02857em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: var(--light-shadow);
     }
-    #imagePreview {
-        max-width: 150px;
-    }
-}
 
-@@media (max-width: 480px) {
-    .login-container, .register-form {
-        padding: 2rem;
-        max-width: 320px;
+    .dark #button1,
+    .dark #button2 {
+        background-color: var(--dark-primary);
+        color: rgba(0, 0, 0, 0.87);
+        box-shadow: var(--dark-shadow);
     }
-    input {
-        font-size: 0.9rem;
-        padding: 10px 8px;
+
+    #button1:hover, #button2:hover {
+        background-color: var(--light-primary-hover);
+        transform: translateY(-1px);
     }
-    .label1, .label2 {
-        font-size: 0.85rem;
+
+    .dark #button1:hover,
+    .dark #button2:hover {
+        background-color: var(--dark-primary-hover);
     }
-    input:focus ~ .label1, input:not(:placeholder-shown) ~ .label1,
-    input:focus ~ .label2, input:not(:placeholder-shown) ~ .label2 {
+
+    /* Ripple Effect */
+    .ripple {
+        position: absolute;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.7);
+        transform: scale(0);
+        animation: ripple 600ms linear;
+        pointer-events: none;
+    }
+
+    .dark .ripple {
+        background-color: rgba(0, 0, 0, 0.3);
+    }
+
+    @@keyframes ripple {
+        to
+
+    {
+        transform: scale(4);
+        opacity: 0;
+    }
+
+    }
+
+    /* Error States */
+    input.error {
+        border-color: var(--light-error);
+    }
+
+    .dark input.error {
+        border-color: var(--dark-error);
+    }
+
+    input.error ~ label {
+        color: var(--light-error);
+    }
+
+    .dark input.error ~ label {
+        color: var(--dark-error);
+    }
+
+    .error-message {
+        color: var(--light-error);
         font-size: 0.75rem;
+        margin-top: 3px;
+        margin-left: 12px;
     }
-    #button1, #button2 {
-        font-size: 0.9rem;
-        padding: 10px;
+
+    .dark .error-message {
+        color: var(--dark-error);
     }
-    #imagePreview {
-        max-width: 120px;
-    }
-}
 </style>
 
 <script>
@@ -524,29 +465,25 @@ input:focus ~ .label2, input:not(:placeholder-shown) ~ .label2 {
     }
 
     // Create the global alert container
-    var globalAlertContainer = document.createElement("div");
+        var globalAlertContainer = document.createElement("div");
     globalAlertContainer.id = "globalAlertContainer";
     globalAlertContainer.style.position = "fixed";
-    globalAlertContainer.style.top = "20px"; // Increased top margin to avoid toolbar
+    globalAlertContainer.style.top = "20px";
     globalAlertContainer.style.left = "50%";
     globalAlertContainer.style.transform = "translateX(-50%)";
-    globalAlertContainer.style.zIndex = "1100"; // Ensure it's above the modal and toolbar
+    globalAlertContainer.style.zIndex = "1100";
     globalAlertContainer.style.width = "400px";
     globalAlertContainer.style.maxWidth = "90%";
     globalAlertContainer.style.display = "flex";
     globalAlertContainer.style.flexDirection = "column";
     globalAlertContainer.style.alignItems = "center";
-    // Append to the body
-
-    function customAlert(message, delayInSeconds) {
-        setTimeout(() => {
-            alert(message);
-        }, delayInSeconds * 1000);
-    }
+    document.body.appendChild(globalAlertContainer);
 
     function showAlert(message, type = "danger", duration = 3000) {
         const alertDiv = document.createElement("div");
         alertDiv.classList.add("alert", `alert-${type}`, "shadow-lg", "p-3", "rounded", "animated-alert");
+
+        // Base styles
         alertDiv.style.position = "relative";
         alertDiv.style.marginBottom = "10px";
         alertDiv.style.opacity = "0";
@@ -555,50 +492,111 @@ input:focus ~ .label2, input:not(:placeholder-shown) ~ .label2 {
         alertDiv.style.width = "100%";
         alertDiv.style.maxWidth = "400px";
         alertDiv.style.boxShadow = "0px 4px 10px rgba(0, 0, 0, 0.1)";
-        alertDiv.style.borderLeft = `5px solid ${type === "danger" ? "#dc3545" : type === "warning" ? "#ffc107" : "#28a745"}`;
-        alertDiv.style.backgroundColor = "#ffffff"; // Explicit background color
-        alertDiv.style.color = "#000000"; // Explicit text color for better contrast
+        alertDiv.style.borderLeft = `5px solid ${
+            type === "danger" ? "var(--light-error)" :
+            type === "warning" ? "#ffc107" : "#28a745"
+        }`;
+        alertDiv.style.backgroundColor = "var(--light-bg)";
+        alertDiv.style.color = "var(--light-text)";
+        alertDiv.style.borderRadius = "8px";
+        alertDiv.style.padding = "16px";
 
-        // Progress bar for auto-hide timer
+        // Dark mode styles
+        if (document.body.classList.contains('dark')) {
+            alertDiv.style.backgroundColor = "var(--dark-bg)";
+            alertDiv.style.color = "var(--dark-text)";
+            alertDiv.style.boxShadow = "0px 4px 10px rgba(0, 0, 0, 0.3)";
+            alertDiv.style.borderLeft = `5px solid ${
+                type === "danger" ? "var(--dark-error)" :
+                type === "warning" ? "#ffc107" : "#28a745"
+            }`;
+        }
+
+        // Progress bar
         const progressBar = document.createElement("div");
         progressBar.style.height = "3px";
         progressBar.style.width = "100%";
         progressBar.style.position = "absolute";
         progressBar.style.bottom = "0";
         progressBar.style.left = "0";
-        progressBar.style.backgroundColor = type === "danger" ? "#dc3545" : type === "warning" ? "#ffc107" : "#28a745";
+        progressBar.style.backgroundColor = type === "danger" ? "var(--light-error)" :
+                                          type === "warning" ? "#ffc107" : "#28a745";
         progressBar.style.transition = `width ${duration}ms linear`;
+        progressBar.style.borderRadius = "0 0 8px 8px";
+
+        // Dark mode progress bar
+        if (document.body.classList.contains('dark')) {
+            progressBar.style.backgroundColor = type === "danger" ? "var(--dark-error)" :
+                                              type === "warning" ? "#ffc107" : "#28a745";
+        }
 
         alertDiv.innerHTML = `
-        <div class="d-flex justify-content-between align-items-center">
-            <span class="fw-semibold">${message}</span>
-            <button type="button" class="btn-close" aria-label="Close"></button>
-        </div>
-    `;
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-weight: 500;">${message}</span>
+                <button type="button" style="
+                    background: none;
+                    border: none;
+                    cursor: pointer;
+                    color: ${document.body.classList.contains('dark') ? 'var(--dark-text)' : 'var(--light-text)'};
+                    font-size: 1.2rem;
+                    padding: 0 0 0 10px;
+                " aria-label="Close">×</button>
+            </div>
+        `;
 
         alertDiv.appendChild(progressBar);
         globalAlertContainer.appendChild(alertDiv);
 
-        // Show the alert with animation
+        // Animation in
         setTimeout(() => {
             alertDiv.style.opacity = "1";
             alertDiv.style.transform = "scale(1)";
-            progressBar.style.width = "0"; // Progress bar animation
+            progressBar.style.width = "0";
         }, 100);
 
-        // Auto-hide after specified duration
-        setTimeout(() => {
+        // Auto-hide
+        const hideTimeout = setTimeout(() => {
             alertDiv.style.opacity = "0";
             alertDiv.style.transform = "scale(0.9)";
             setTimeout(() => alertDiv.remove(), 500);
         }, duration);
 
-        // Close button event
-        alertDiv.querySelector(".btn-close").addEventListener("click", function () {
+        // Close button
+        alertDiv.querySelector("button").addEventListener("click", function() {
+            clearTimeout(hideTimeout);
             alertDiv.style.opacity = "0";
             alertDiv.style.transform = "scale(0.9)";
             setTimeout(() => alertDiv.remove(), 500);
         });
+
+        // Watch for dark mode changes
+        const observer = new MutationObserver(() => {
+            if (document.body.classList.contains('dark')) {
+                alertDiv.style.backgroundColor = "var(--dark-bg)";
+                alertDiv.style.color = "var(--dark-text)";
+                alertDiv.style.boxShadow = "0px 4px 10px rgba(0, 0, 0, 0.3)";
+                alertDiv.querySelector("button").style.color = "var(--dark-text)";
+                progressBar.style.backgroundColor = type === "danger" ? "var(--dark-error)" :
+                                                  type === "warning" ? "#ffc107" : "#28a745";
+                alertDiv.style.borderLeft = `5px solid ${
+                    type === "danger" ? "var(--dark-error)" :
+                    type === "warning" ? "#ffc107" : "#28a745"
+                }`;
+            } else {
+                alertDiv.style.backgroundColor = "var(--light-bg)";
+                alertDiv.style.color = "var(--light-text)";
+                alertDiv.style.boxShadow = "0px 4px 10px rgba(0, 0, 0, 0.1)";
+                alertDiv.querySelector("button").style.color = "var(--light-text)";
+                progressBar.style.backgroundColor = type === "danger" ? "var(--light-error)" :
+                                                  type === "warning" ? "#ffc107" : "#28a745";
+                alertDiv.style.borderLeft = `5px solid ${
+                    type === "danger" ? "var(--light-error)" :
+                    type === "warning" ? "#ffc107" : "#28a745"
+                }`;
+            }
+        });
+
+        observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
     }
 
     function showCustomConfirm(userId, callback) {
@@ -620,4 +618,35 @@ input:focus ~ .label2, input:not(:placeholder-shown) ~ .label2 {
         });
     }
 
+       function customAlert(message, delayInSeconds) {
+         setTimeout(() => {
+             alert(message);
+         }, delayInSeconds * 1000);
+     }
+        // Add ripple effect to buttons
+    function createRipple(event) {
+        const button = event.currentTarget;
+
+        const circle = document.createElement("span");
+        const diameter = Math.max(button.clientWidth, button.clientHeight);
+        const radius = diameter / 2;
+
+        circle.style.width = circle.style.height = `${diameter}px`;
+        circle.style.left = `${event.clientX - button.getBoundingClientRect().left - radius}px`;
+        circle.style.top = `${event.clientY - button.getBoundingClientRect().top - radius}px`;
+        circle.classList.add("ripple");
+
+        const ripple = button.getElementsByClassName("ripple")[0];
+
+        if (ripple) {
+            ripple.remove();
+        }
+
+        button.appendChild(circle);
+    }
+
+    // Add event listeners to buttons
+    document.querySelectorAll('#button1, #button2').forEach(button => {
+        button.addEventListener('click', createRipple);
+    });
 </script>

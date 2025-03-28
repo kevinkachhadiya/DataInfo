@@ -1185,8 +1185,7 @@ namespace DataInfo.Controllers
                 const int maxRetries = 3; // Retry up to 3 times
                 const int delayMs = 6000; // Wait 2 seconds between retries
 
-                for (int attempt = 0; attempt < maxRetries; attempt++)
-                {
+                
                     try
                     {
                         string json = JsonSerializer.Serialize(login);
@@ -1222,12 +1221,8 @@ namespace DataInfo.Controllers
                     catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.BadGateway ||
                                                           ex.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
                     {
-                        Debug.WriteLine($"Attempt {attempt + 1} failed: {ex.Message}");
-                        if (attempt < maxRetries - 1) // Don’t delay on the last attempt
-                        {
-                            await Task.Delay(delayMs);
-                            continue; // Retry
-                        }
+                      
+                       
 
                         // If all retries fail
                         string errorJson = JsonSerializer.Serialize(new { success = false, message = "Service unavailable after retries" });
@@ -1251,9 +1246,7 @@ namespace DataInfo.Controllers
                     }
                 }
 
-                // This line is technically unreachable, but added for completeness
-                return StatusCode(500, "Unexpected error");
-            }
+                
 
             [HttpPost]
             public async Task<IActionResult> ValidToken()
