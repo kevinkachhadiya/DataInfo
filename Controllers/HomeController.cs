@@ -1184,14 +1184,23 @@ namespace DataInfo.Controllers
             {
                 try
                 {
-                    // Serialize login object to JSON
                     string json = JsonSerializer.Serialize(login);
                     HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                    // Set timeout
+                    // Set a higher timeout to accommodate the delay
                     _httpClient.Timeout = TimeSpan.FromSeconds(60);
 
-                    // Simple retry logic: Try up to 3 times with increasing delays
+                    // Check if this is the "first" request by looking at session or a flag
+                    bool isFirstRequest = string.IsNullOrEmpty(HttpContext.Session.GetString("ApiWarmedUp"));
+
+                    if (isFirstRequest)
+                    {
+                        // Delay 30-40 seconds on the first request to give API time to start
+                        await Task.Delay(TimeSpan.FromSeconds(45)); // Adjust between 30-40s as needed
+                        HttpContext.Session.SetString("ApiWarmedUp", "true"); // Mark as warmed up
+                    }
+
+                    // Retry logic in case the API still isn’t ready
                     int maxRetries = 3;
                     for (int attempt = 0; attempt < maxRetries; attempt++)
                     {
@@ -1204,7 +1213,6 @@ namespace DataInfo.Controllers
                             {
                                 string token = JsonDocument.Parse(responseMessage).RootElement.GetProperty("token").GetString() ?? "N/A";
                                 HttpContext.Session.SetString("AuthToken", token);
-
                                 return Content(JsonSerializer.Serialize(new { success = true }), "application/json");
                             }
                             else
@@ -1218,11 +1226,11 @@ namespace DataInfo.Controllers
                             {
                                 return StatusCode(503, JsonSerializer.Serialize(new { success = false, message = "Service unavailable after retries" }));
                             }
-                            await Task.Delay(TimeSpan.FromSeconds(2 * (attempt + 1))); // Wait 2s, 4s, 6s before retrying
+                            // Shorter delays after initial wait: 5s, 10s, 15s
+                            await Task.Delay(TimeSpan.FromSeconds(5 * (attempt + 1)));
                         }
                     }
 
-                    // This line is technically unreachable due to the return above, but included for clarity
                     return StatusCode(503, JsonSerializer.Serialize(new { success = false, message = "Service unavailable" }));
                 }
                 catch (Exception e)
