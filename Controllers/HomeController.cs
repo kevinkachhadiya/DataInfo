@@ -1182,63 +1182,69 @@ namespace DataInfo.Controllers
             [HttpPost]
             public async Task<IActionResult> UserLogin([FromBody] Login login)
             {
-                try
-                {
-                    string json = JsonSerializer.Serialize(login);
-                    HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                    // Set a higher timeout to accommodate the delay
-                    _httpClient.Timeout = TimeSpan.FromSeconds(60);
-
-                    // Check if this is the "first" request by looking at session or a flag
-                    bool isFirstRequest = string.IsNullOrEmpty(HttpContext.Session.GetString("ApiWarmedUp"));
-
-                    if (isFirstRequest)
+                
+                    try
                     {
-                        // Delay 30-40 seconds on the first request to give API time to start
-                        await Task.Delay(TimeSpan.FromSeconds(45)); // Adjust between 30-40s as needed
-                        HttpContext.Session.SetString("ApiWarmedUp", "true"); // Mark as warmed up
-                    }
+                        string json = JsonSerializer.Serialize(login);
+                        HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                    // Retry logic in case the API still isn’t ready
-                    int maxRetries = 3;
-                    for (int attempt = 0; attempt < maxRetries; attempt++)
-                    {
-                        try
+                        HttpResponseMessage response = await _httpClient.PostAsync($"{_apiBaseUrl}/api/Auth/Login", content);
+                        string responseMessage = await response.Content.ReadAsStringAsync();
+
+                        if (response.StatusCode == System.Net.HttpStatusCode.OK)
                         {
-                            HttpResponseMessage response = await _httpClient.PostAsync($"{_apiBaseUrl}/api/Auth/Login", content);
-                            string responseMessage = await response.Content.ReadAsStringAsync();
+                            string token = JsonDocument.Parse(responseMessage).RootElement.GetProperty("token").GetString() ?? "N/A";
+                            HttpContext.Session.SetString("AuthToken", token);
 
-                            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                            string successJson = JsonSerializer.Serialize(new { success = true });
+                            return new ContentResult
                             {
-                                string token = JsonDocument.Parse(responseMessage).RootElement.GetProperty("token").GetString() ?? "N/A";
-                                HttpContext.Session.SetString("AuthToken", token);
-                                return Content(JsonSerializer.Serialize(new { success = true }), "application/json");
-                            }
-                            else
-                            {
-                                return Content(JsonSerializer.Serialize(new { success = false, message = responseMessage }), "application/json");
-                            }
+                                Content = successJson,
+                                ContentType = "application/json",
+                                StatusCode = 200
+                            };
                         }
-                        catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.BadGateway)
+                        else
                         {
-                            if (attempt == maxRetries - 1) // Last attempt failed
+                            string successJson = JsonSerializer.Serialize(new { success = false, message = responseMessage });
+                            return new ContentResult
                             {
-                                return StatusCode(503, JsonSerializer.Serialize(new { success = false, message = "Service unavailable after retries" }));
-                            }
-                            // Shorter delays after initial wait: 5s, 10s, 15s
-                            await Task.Delay(TimeSpan.FromSeconds(5 * (attempt + 1)));
+                                Content = successJson,
+                                ContentType = "application/json",
+                                StatusCode = 200
+                            };
                         }
                     }
+                    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.BadGateway ||
+                                                          ex.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
+                    {
+                      
+                       
 
-                    return StatusCode(503, JsonSerializer.Serialize(new { success = false, message = "Service unavailable" }));
+                        // If all retries fail
+                        string errorJson = JsonSerializer.Serialize(new { success = false, message = "Service unavailable after retries" });
+                        return new ContentResult
+                        {
+                            Content = errorJson,
+                            ContentType = "application/json",
+                            StatusCode = 503 // Service Unavailable
+                        };
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine(e);
+                        string errorJson = JsonSerializer.Serialize(new { success = false, message = "Some error occurred" });
+                        return new ContentResult
+                        {
+                            Content = errorJson,
+                            ContentType = "application/json",
+                            StatusCode = 500
+                        };
+                    }
                 }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(e);
-                    return StatusCode(500, JsonSerializer.Serialize(new { success = false, message = "Some error occurred" }));
-                }
-            }
+
+                
 
             [HttpPost]
             public async Task<IActionResult> ValidToken()
