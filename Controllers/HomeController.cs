@@ -946,10 +946,10 @@ namespace DataInfo.Controllers
                     }
                     else
                     {
-                        editUser.ImagePath = "notuploaded";
+                        editUser.ImagePath = editUser.ImagePath;
                     }
 
-                    editUser.user_id = user.user_id;
+                        editUser.user_id = user.user_id;
                         editUser.FirstName = user.FirstName;
                         editUser.LastName = user.LastName;
                         editUser.Email = user.Email;
@@ -1182,11 +1182,9 @@ namespace DataInfo.Controllers
             [HttpPost]
             public async Task<IActionResult> UserLogin([FromBody] Login login)
             {
-                const int maxRetries = 3; // Retry up to 3 times
-                const int delayMs = 6000; // Wait 2 seconds between retries
 
-                
-                    try
+                _httpClient.Timeout = TimeSpan.FromSeconds(60);
+                try
                     {
                         string json = JsonSerializer.Serialize(login);
                         HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
