@@ -14,6 +14,8 @@
 }
 
 
+<div id="loader_"></div>
+
     <div role="status" id="spinner" style="display:none">
         <span class="sr-only">Loading...</span>
     </div>
@@ -545,6 +547,7 @@
 </div>
 
 
+
 @section scripts {
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -553,6 +556,7 @@
     <script>
 
         $(document).ready(function () {
+
 
             document.body.appendChild(globalAlertContainer);
 
@@ -755,11 +759,11 @@
    });
 
    $("#CreateNewUser").on('submit', function (e) {
-
-           document.getElementById("spinner").css("display","block");
+           
            e.preventDefault();
+           $("#loader_").css("display","block");
            var formData = new FormData(this);
-
+           $("#spinner").css("display","block");
 
            $.ajax({
                url: '@Url.Action("createUser", "Home")',
@@ -774,17 +778,18 @@
                        $("#CreateModal").hide();
 
                        $("#CreateModal form")[0].reset();
+                       
 
+                       showAlert("User Created Successfully","success", 1900);
 
-                       showAlert("User Created Successfully", type = "success", 1900);
+                                $("#spinner").css("display","none");
 
-                                document.getElementById("spinner").css("display","none");
-
-                       setTimeout(() => { window.location.reload(); }, 2000)
+                               setTimeout(() => { window.location.reload();
+                              $("#loader_").css("display","none"); }, 2000)
 
                    } else {
 
-                       showAlert('Error: ' + response.message, type = "danger", 1900);
+                       showAlert('Error: ' + response.message,"danger", 1900);
                    }
 
                }
@@ -797,8 +802,12 @@
       });
 
         function deleteUser(userId) {
+
+
 showCustomConfirm(userId, function (confirmed) {
     if (confirmed) {
+
+        $("#loader_").css("display","block");
         $.ajax({
 
             url: '@Url.Action("DeleteWebApi", "Home")',
@@ -813,7 +822,8 @@ showCustomConfirm(userId, function (confirmed) {
 
                     showAlert("User deleted successfully whose name is " + response.Name, "danger", 1900);
 
-                    setTimeout(() => { window.location.reload()  },2000);
+                                    setTimeout(() => { window.location.reload();  $("#loader_").css("display","none");
+                           },2000);
 
 
 
@@ -822,6 +832,7 @@ showCustomConfirm(userId, function (confirmed) {
             error: function (xhr, status, error) {
                 // Corrected: Pass the type parameter directly
                 showAlert("An error occurred: " + error, "danger", 3000);
+                          $("#loader_").css("display","none");
             }
         });
     }
@@ -829,6 +840,8 @@ showCustomConfirm(userId, function (confirmed) {
     }
 
         function edituser(userId) {
+
+      $("#loader_").css("display","block");
   
        var form = $("#EditUserForm")[0];
        form.reset();
@@ -935,15 +948,17 @@ showCustomConfirm(userId, function (confirmed) {
 
                         $("#user_id").val(response.message.user_id)
 
-
+                                  $("#loader_").css("display","none");
                         $("#editUserModal").modal("show");
 
                     } else {
                         customAlert('Error: ' + response.message, 4);
+                                  $("#loader_").css("display","none");
                     }
                 },
                 error: function (xhr, status, error) {
                     customAlert('Error: ' + response.message, 4);
+                              $("#loader_").css("display","none");
                 }
             });
 
@@ -1025,8 +1040,10 @@ showCustomConfirm(userId, function (confirmed) {
 
            $("#EditUserForm").off('submit').on('submit', function (e) {
 
-                    e.preventDefault();
-               var formData = new FormData(this);
+               $("#loader_").css("display","block");
+                e.preventDefault();
+               
+                var formData = new FormData(this);
 
                     $.ajax({
                         url: '@Url.Action("EditUserWebApi", "Home")',
@@ -1040,7 +1057,7 @@ showCustomConfirm(userId, function (confirmed) {
 
                                 showAlert("user Edited successfully", type = "warning", 1900);
 
-                                setTimeout(() => { window.location.reload(); }, 2000);
+                                        setTimeout(() => { window.location.reload();     $("#loader_").css("display","none"); }, 2000);
 
                                 $("#EditUserForm input, #EditUserForm select, #EditUserForm textarea").each(function () {
                                     this.setCustomValidity("");
@@ -1070,9 +1087,12 @@ showCustomConfirm(userId, function (confirmed) {
 
             });
 
+
+
         }  
 
         function detailsUser(userId) {
+                         $("#loader_").css("display","block");
 $.ajax({
     url: '@Url.Action("UserDetailWebApi", "Home")',
     type: "Get",
@@ -1081,6 +1101,8 @@ $.ajax({
     success: function (response) {
         // Check if response has the expected structure
         if (response && response.message) {
+
+                         $("#loader_").css("display","none");
             var user = response.message;
 
            
@@ -1598,3 +1620,36 @@ $.ajax({
 
     </script>
 }
+
+
+<style>
+    #loader_ {
+        border: 8px solid #f3f3f3; /* Light gray */
+        border-top: 8px solid #3498db; /* Blue */
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display:none;
+        z-index:1101;
+    }
+
+    @@keyframes spin {
+        0% {
+            transform: translate(-50%, -50%) rotate(0deg);
+        }
+
+        100% {
+            transform: translate(-50%, -50%) rotate(360deg);
+        }
+    }
+
+    /* Hide loader when content is loaded */
+    .loaded .loader {
+        display: none;
+    }
+</style>

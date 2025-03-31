@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "Login";
 }
-
+<div class="loader"></div>
 <div class="login-container">
     <form class="login-form">
 
@@ -124,7 +124,7 @@
 
     .dark .login-container,
     .dark .register-form {
-        background: #1f0a1c;
+        background: #441637;
         box-shadow: var(--dark-shadow);
     }
 
@@ -179,7 +179,7 @@
     .dark .label1,
     .dark .label2 {
         color: var(--dark-label);
-        background-color: #1f0a1c;
+        background-color: #441637;
     }
 
     input:focus ~ .label1,
@@ -298,7 +298,10 @@
                     const loginContainer = document.querySelector('.login-container');
                     loginContainer.classList.add('hidden');
                     $(".register-form").css("display", "");
+                      $(".loader").css("display","block");
+
                     loginContainer.style.display = 'none';
+                   
                     $.ajax({
                         url: '@Url.Action("GetDetailsFromToken","Home")',
                         type: 'GET',
@@ -314,7 +317,8 @@
                                     $("#dob_").val(response.message.Dob);
                                     $("#Country_").val(response.message.SelectedCountry);
                                     $("#State_").val(response.message.selectedState);
-                                   $("#City_").val(response.message.selectedCity);
+                                    $("#City_").val(response.message.selectedCity);
+                                    $(".loader").css("display","none");
 
                                 }
                             }
@@ -323,6 +327,7 @@
                 else
                 {
                     $(".register-form").css("display", "none");
+                      $(".loader").css("display","none");
 
                 }
 
@@ -332,12 +337,12 @@
     });
 
     $(document).ready(function () {
-
+          $(".loader").css("display","none");
         document.body.appendChild(globalAlertContainer);
 
         $(".register-form").on("submit", function (event) {
-
             event.preventDefault();
+              $(".loader").css("display","block");
             $.ajax({
                 url:'@Url.Action("DeleteToken","Home")',
                 type:'DELETE',
@@ -346,21 +351,23 @@
                 {
                       if(response.success)
                   {
-                        console.log("Successfully deleted");
                         showAlert(response.message, "danger", 1900);
-                        setTimeout(() => { window.location.reload() }, 1900);
+                         setTimeout(() => { window.location.reload(); $(".loader").css("display","none"); }, 1900);
+                         
                   }
                   else
                   {
                      console.log("not deleted");
                      showAlert(response.message, "danger", 1900);
+                       $(".loader").css("display","none");
                   }
                 }
             });
         });
 
         $(".login-form").on("submit", function (event) {
-            event.preventDefault(); // Prevents the form from submitting (optional, for testing)
+            event.preventDefault();
+               $(".loader").css("display",""); // Prevents the form from submitting (optional, for testing)
             const username = $('input[type="text"]').val();
             const password = $('input[type="password"]').val()
 
@@ -369,7 +376,7 @@
                 Email: username,
                 ConfirmPassword: password
             };
-
+            
 
             $.ajax({
                 url: '@Url.Action("UserLogin", "Home")',
@@ -392,6 +399,7 @@
                             loginContainer.style.display = 'none';
                             $(".register-form").css("display", "");
                             window.location.reload();
+                              $(".loader").css("display","none");
                         }, 1900);
 
                     }
@@ -402,6 +410,7 @@
              
                         showAlert(response.message) ; // Handle failure
                         $(".register-form").css("display", "none");
+                        $(".loader").css("display","none");
                        
                     }
 
@@ -650,3 +659,37 @@
         button.addEventListener('click', createRipple);
     });
 </script>
+
+<style>
+    .loader {
+        border: 8px solid #f3f3f3; /* Light gray */
+        border-top: 8px solid #3498db; /* Blue */
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index:1101;
+    }
+
+    @@keyframes spin {
+        0%
+
+    {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+
+    }
+
+    /* Hide loader when content is loaded */
+    .loaded .loader {
+        display: none;
+    }
+</style>
