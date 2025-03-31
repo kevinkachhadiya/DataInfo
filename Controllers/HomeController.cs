@@ -766,7 +766,6 @@ namespace DataInfo.Controllers
             {
                 try
                 {
-                   
                         if (file != null && file.Length > 0)
                         {
                         string fileName = Path.GetFileNameWithoutExtension(file.FileName);
@@ -877,7 +876,6 @@ namespace DataInfo.Controllers
                     };
                 }
             }
-
             [HttpPost]
             public async Task<IActionResult> EditUser(UserData user, IFormFile file)
             {
@@ -897,7 +895,6 @@ namespace DataInfo.Controllers
                     PopulateSelectLists(user);
                     var oldEmail = editUser.Email;
                     var oldPhoneNumber = editUser.MobileNo;
-
 
                     if (file != null && file.Length > 0)
                     {
@@ -1182,8 +1179,6 @@ namespace DataInfo.Controllers
             [HttpPost]
             public async Task<IActionResult> UserLogin([FromBody] Login login)
             {
-
-                
                     try
                     {
                         string json = JsonSerializer.Serialize(login);

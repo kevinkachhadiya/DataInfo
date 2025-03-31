@@ -19,7 +19,7 @@
 
 </head>
 <body class="container1">
-    <nav class="navbar navbar-expand-md  fixed-top">
+    <nav class="navbar navbar-expand-md  fixed-top" style="position:relative">
         <div class="container">
             <a href="/Home/ViewUser" class="navbar-brand d-flex align-items-center gap-3">
                 <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Flowbite Logo">
@@ -30,7 +30,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ms-auto gap-4">
+                <ul class="navbar-nav ms-auto gap-4" style="white-space:nowrap">
                     <li class="nav-item">
                         <a class="nav-link hover:text-gray-300" href="@Url.Action("Login", "Home", new { area = "" })">
                             <span class="web-api-symbol">👤</span>
@@ -400,7 +400,7 @@
     .dark body {
         background-color: #1A1A1A;
         color: #E0E0E0;
-        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://iljwwltumxlckivdnqsl.supabase.co/storage/v1/object/public/user-images//darkd.jpg);
+        background-image: linear-gradient(rgba(0, 0, 0, 0.01), rgba(0, 0, 0, 0.01)), url(https://iljwwltumxlckivdnqsl.supabase.co/storage/v1/object/public/user-images//darkd.jpg);
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -558,9 +558,6 @@
         color: black;
     }
 
-    .dark .navbar {
-        background-color: #002239;
-    }
 
     .dark .divide-y {
         background-color: rgba(0, 0, 0, 0.6);

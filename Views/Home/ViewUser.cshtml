@@ -708,10 +708,7 @@
                       if (state.Value.toString() == response.message.SelectedStateId.toString())
                           {
                              $("#editstate").val(response.message.SelectedStateId);
-
-
                           }
-
                       });
                  }
           });
@@ -731,7 +728,6 @@
 
             if (City.Value.toString() == response.message.SelectedCityId.toString()) {
                 $("#editcity").val(response.message.SelectedCityId);
-
 
             }
         });
@@ -781,9 +777,9 @@
         //edit country changing event
 
         $("#editcountry").change(function () {
-           var countryId = $(this).val();
-            if (countryId) {
-      $.ajax({
+        var countryId = $(this).val();
+        if (countryId) {
+            $.ajax({
         url: '@Url.Action("GetStatesByCountry", "Home")',
         type: "GET",
         data: { countryId: countryId },
@@ -802,7 +798,6 @@
                 $("#editstate").append('<option value="">Select a State</option>');
                 $("#editcity").empty();
                 $("#editcity").append('<option value="">Select a city</option>');
-
 }
       });
 
@@ -894,11 +889,7 @@
             // Check if response has the expected structure
             if (response && response.message) {
                 var user = response.message;
-
-                // Update image
                 $("#dImage").attr("src", user.ImagePath ?  user.ImagePath : "/images/default-avatar.png");
-
-                // Update text content
                 $("#fullname").text(user.FirstName + " " + user.LastName);
                 $("#dEmail").text(user.Email);
                 $("#Mobile").text(user.MobileNo);
@@ -909,11 +900,11 @@
                 $("#State").text(user.selectedState);
                 $("#City").text(user.selectedCity);
                 $("#user_id").text(user.user_id);
-
                 // Show modal
                 $("#detail").modal("show");
-            } else {
-               
+            } 
+            else 
+            {
                 customAlert("Failed to load user details.",0.25);
             }
         },
