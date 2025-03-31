@@ -52,37 +52,99 @@
                             <span class="web-api-symbol">🔌</span> Server Side
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <label class="inline-flex items-center cursor-pointer gap-2">
-                            <!-- Hidden Checkbox -->
-                            <input type="checkbox" id="darkModeToggle" class="sr-only">
+                   
+                 
 
-                            <!-- Toggle Container -->
-                            <div class="toggle-container relative w-12 h-6 bg-gray-300 rounded-full transition-colors duration-300 ease-in-out">
-                                <!-- Toggle Handle with Symbol -->
-                                <div class="toggle-handle absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-300 ease-in-out flex items-center justify-center text-xs">
-                                    <span class="light-symbol " style="display:none;">☀️</span>
-                                    <span class="dark-symbol " style="display:none;">🌙</span>
-                                </div>
-                            </div>
-
-                            <!-- Toggle Label -->
-                            <span class="text-sm font-medium text-gray-900 dark:text-gray-300" id="tdm">Dark Mode</span>
-                        </label>
-                    </li>
+                    
                 </ul>
             </div>
         </div>
     </nav>
     <div class="container body-content">
+
+        <canvas id="bg-canvas"></canvas>
+
+        <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+        <script>
+            // Initialize scene
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({
+                canvas: document.getElementById('bg-canvas'),
+                antialias: true,
+                alpha: true
+            });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+            // Dark space-like background
+            scene.background = new THREE.Color(0x0a0a12);
+
+            // Create grid
+            const gridSize = 20;
+            const gridDivisions = 30;
+            const gridHelper = new THREE.GridHelper(gridSize, gridDivisions, 0x1a1a3a, 0x0a0a2a);
+            gridHelper.rotation.x = Math.PI / 2;
+            scene.add(gridHelper);
+
+            // Add floating data points (particles)
+            const particleCount = 500;
+            const particles = new THREE.BufferGeometry();
+            const particlePositions = new Float32Array(particleCount * 3);
+            const particleSizes = new Float32Array(particleCount);
+
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                particlePositions[i3] = (Math.random() - 0.5) * gridSize;
+                particlePositions[i3 + 1] = (Math.random() - 0.5) * gridSize;
+                particlePositions[i3 + 2] = (Math.random() - 0.5) * gridSize;
+                particleSizes[i] = Math.random() * 0.5 + 0.5;
+            }
+
+            particles.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+            particles.setAttribute('size', new THREE.BufferAttribute(particleSizes, 1));
+
+            const particleMaterial = new THREE.PointsMaterial({
+                color: 0x4cc9f0,
+                size: 0.1,
+                transparent: true,
+                opacity: 0.8,
+                blending: THREE.AdditiveBlending
+            });
+
+            const particleSystem = new THREE.Points(particles, particleMaterial);
+            scene.add(particleSystem);
+
+            // Camera position
+            camera.position.z = 15;
+            camera.position.y = 5;
+            camera.lookAt(0, 0, 0);
+
+            // Animation
+            function animate() {
+                requestAnimationFrame(animate);
+
+                // Gentle movement
+                particleSystem.rotation.y += 0.0005;
+                gridHelper.rotation.z += 0.0003;
+
+                renderer.render(scene, camera);
+            }
+
+            // Handle resize
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+
+            animate();
+        </script>
         @RenderBody()
         <hr />
         <footer class="footer">
             <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
         </footer>
     </div>
-
- 
     @RenderSection("scripts", required: false)
 </body>
 </html>
@@ -560,7 +622,7 @@
 
 
     .dark .divide-y {
-        background-color: rgba(0, 0, 0, 0.6);
+        background-color: rgba(0, 0, 0, 0.99);
     }
 
     .dark #tdm, .dark h5 {
@@ -923,18 +985,22 @@
     const rootElement = document.documentElement;
     $(document).ready(function () {
 
-        if (darkModeToggle.checked) {
+        localStorage.setItem('theme', 'dark');
+
+      /*  if (darkModeToggle.checked) {
 
             $('.toggle-handle .dark-symbol').css('display', 'block');
         }
         else {
             $('.toggle-handle .light-symbol').css('display', 'block');
         }
-
+        */
     });
 
     function toggleDarkMode() {
-        if (darkModeToggle.checked) {
+         
+
+       /* if (darkModeToggle.checked) {
             rootElement.classList.add('dark');
             localStorage.setItem('theme', 'dark');
             tdm.innerText = "Dark Mode"
@@ -950,18 +1016,36 @@
                 $('.toggle-handle .light-symbol').css('display', 'block');
                 $('.toggle-handle .dark-symbol').css('display', 'none ');
         }
+        */
     }
 
-    darkModeToggle.addEventListener('change', toggleDarkMode);
+    //darkModeToggle.addEventListener('change', toggleDarkMode);
     const savedMode = localStorage.getItem('theme');
     if (savedMode === 'dark') {
         rootElement.classList.add('dark');
-        darkModeToggle.checked = true;
-        tdm.innerText = "Dark Mode"
+       // darkModeToggle.checked = true;
+       // tdm.innerText = "Dark Mode"
 
     } else if (savedMode === 'light') {
         rootElement.classList.remove('dark');
-        tdm.innerText = "Light Mode"
-        darkModeToggle.checked = false;
+       // tdm.innerText = "Light Mode"
+      //  darkModeToggle.checked = false;
     }
 </script>
+<style>
+    body {
+        margin: 0;
+        overflow: hidden;
+        background: #0a0a12; /* Fallback color */
+    }
+
+    #bg-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: -1;
+        width: 100%;
+        height: 100%;
+    }
+
+</style>
