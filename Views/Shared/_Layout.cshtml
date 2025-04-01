@@ -150,32 +150,8 @@
        position : fixed,
        
     }
-      /* Light Mode Styles */
-    body {
-        background-color: #FFFFFF; /* Solid white fallback */
-        color: #1F2937; /* Dark gray text */
-        background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('https://iljwwltumxlckivdnqsl.supabase.co/storage/v1/object/public/user-images//lightd.jpg');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        min-height: 100vh;
-        margin: 0;
-        animation: backgroundFade 2s ease-out; /* Subtle background fade on load */
-    }
 
-    /* Navbar */
-    .navbar {
-        background-color: #ecfbfe;
-        color: #1F2937;
-        position: sticky;
-        top: 0;
-        width: 100%;
-        padding: 5px;
-        z-index: 1000;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        animation: slideDown 0.5s ease-out; /* Navbar slides in */
-    }
+ 
 
     .navbar a, .navbar span {
         color: #1F2937;
@@ -261,65 +237,7 @@
         animation: processingPulse 1.5s infinite ease-in-out; /* Processing indicator pulse */
     }
 
-    /* Light Mode Styles (Default) */
-    #servertable_length label, #servertable_info {
-        margin-left: 15px;
-        font-size: 14px;
-        color: #1F2937;
-    }
-
-    #servertable_paginate {
-        margin-bottom: 10px;
-        margin-right: 10px;
-    }
-
-    #servertable_paginate .paginate_button {
-        color: #1F2937 !important;
-        background-color: rgba(255, 255, 255, 0.9);
-        border: 1px solid #9CA3AF;
-        border-radius: 4px;
-        padding: 5px 10px;
-        transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
-        will-change: transform; /* Optimize hover animation */
-    }
-
-    #servertable_paginate .paginate_button:hover {
-        background-color: #E5E7EB;
-        color: #1F2937 !important;
-        transform: translateY(-2px); /* Lift on hover */
-    }
-
-    #servertable_paginate .paginate_button.current {
-        background-color: #2563EB !important;
-        border-color: #2563EB !important;
-        color: #FFFFFF !important;
-        animation: currentPulse 1s infinite ease-in-out; /* Subtle pulse for active page */
-    }
-
-    #servertable_filter {
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: #1F2937;
-    }
-
-    #servertable_filter input {
-        width: 250px;
-        padding: 8px 10px;
-        border: 1px solid #9CA3AF;
-        border-radius: 6px;
-        background-color: rgba(255, 255, 255, 0.95);
-        color: #1F2937;
-        transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    }
-
-    #servertable_filter input:focus {
-        border-color: #2563EB;
-        outline: none;
-        box-shadow: 0 0 5px rgba(37, 99, 235, 0.5);
-        animation: inputGlow 0.6s ease-in-out infinite alternate; /* Glow on focus */
-    }
+  
 
 
     .dark .navbar {
@@ -404,56 +322,7 @@
     }
 
     /* Buttons and Modals */
-    /* Light Mode Styles */
-    #create_user {
-        margin-right: 15px;
-        color: #FFFFFF;
-        padding: 8px 16px; /* Added for better clickable area */
-        border-radius: 4px;
-        background-color: #007bff; /* Default background */
-        transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
-        will-change: transform; /* Optimize for animation */
-    }
-
-    #create_user:hover {
-        background-color: #0056b3;
-        transform: scale(1.05); /* Slight scale on hover */
-        animation: buttonPulse 0.4s ease; /* Subtle pulse */
-    }
-
-    #CreateNewUser {
-        color: black;
-        transition: color 0.2s ease-in-out;
-    }
-
-    .modal-body {
-        background-color: #FFFFFF;
-        padding: 20px;
-        border-radius: 8px;
-        animation: modalFade 0.5s ease-out; /* Modal fades in */
-    }
-
-    label, .col-md-3, .cnf {
-        color: #333333;
-    }
-
-    .form-check-label {
-        margin: 0;
-    }
-
-    hr {
-        margin-top: 15px;
-        border-color: #DDD;
-        transition: border-color 0.3s ease-in-out;
-    }
-
-    .text-danger {
-        background-color: transparent;
-        padding: 4px 8px;
-        border-radius: 4px;
-        animation: errorShake 0.3s ease; /* Shake effect for errors */
-    }
-
+   
     /* Dark Mode Styles */
     .dark body {
         background-color: #1A1A1A;
@@ -718,32 +587,7 @@
         animation: thumbPulse 0.4s ease; /* Pulse on hover */
     }
 
-    /* Light Mode Toggle Styles */
-    .toggle-container {
-        background-color: #D1D5DB; /* Gray-300 */
-        width: 3rem;
-        height: 1.5rem;
-        border-radius: 9999px;
-        position: relative;
-        transition: background-color 0.3s ease-in-out;
-        animation: toggleFade 0.5s ease-out; /* Fade in toggle */
-    }
 
-    .toggle-handle {
-        width: 1.25rem;
-        height: 1.25rem;
-        background-color: #FFFFFF;
-        border-radius: 50%;
-        position: absolute;
-        top: 0.125rem;
-        left: 0.125rem;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        will-change: transform; /* Optimize for animation */
-    }
 
     #darkModeToggle:checked ~ .toggle-container {
         background-color: #4F46E5; /* Indigo for "on" state */
@@ -781,15 +625,6 @@
         color: #D1D5DB; /* Gray-300 for dark mode */
     }
 
-    /* Symbol Styling */
-    .light-symbol {
-        color: #F59E0B; /* Amber for sun */
-        transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
-    }
-
-    .light-symbol:hover {
-        transform: scale(1.2); /* Scale up on hover */
-    }
 
     .dark-symbol {
         color: #60A5FA; /* Light blue for moon */
@@ -800,51 +635,7 @@
         transform: scale(1.2); /* Scale up on hover */
     }
 
-    /* Light Mode Styles */
-    .nav-link {
-        color: #1F2937; /* Dark gray */
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        transition: color 0.3s ease-in-out, transform 0.2s ease-in-out;
-    }
-
-    .nav-link:hover {
-        color: #6B7280; /* Gray-500 for hover */
-        transform: translateX(5px); /* Slight shift on hover */
-        animation: navPulse 0.4s ease; /* Subtle pulse */
-    }
-
-    .web-api-symbol {
-        font-size: 1rem;
-        color: #2563EB; /* Blue for light mode */
-        transition: color 0.3s ease-in-out, transform 0.2s ease-in-out;
-        font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
-    }
-
-    .web-api-symbol:hover {
-        transform: rotate(360deg); /* Spin on hover */
-    }
-
-    .client-side-symbol {
-        font-size: 1rem;
-        color: #16A34A; /* Green for client-side */
-        transition: color 0.3s ease-in-out, transform 0.2s ease-in-out;
-    }
-
-    .client-side-symbol:hover {
-        transform: scale(1.2); /* Scale up on hover */
-    }
-
-    .server-side-symbol {
-        font-size: 1rem;
-        color: #D97706; /* Amber for server-side */
-        transition: color 0.3s ease-in-out, transform 0.2s ease-in-out;
-    }
-
-    .server-side-symbol:hover {
-        transform: scale(1.2); /* Scale up on hover */
-    }
+   
 
     /* Dark Mode Styles */
     .dark .nav-link {
@@ -885,83 +676,12 @@
         margin-right: 15px;
     }
 
-
-    @@keyframes backgroundFade {
-        from { opacity: 0; }
-        to { opacity: 1; }
+   .dark .btn-close
+    {
+        background-color: antiquewhite;
+       
     }
-
-
-    @@keyframes processingPulse {
-        0%, 100% { transform: scale(1); opacity: 0.9; }
-        50% { transform: scale(1.05); opacity: 1; }
-    }
-    }
-
-    @@keyframes currentPulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.03); }
-    }
-
-    @@keyframes inputGlow {
-        from { box-shadow: 0 0 5px rgba(37, 99, 235, 0.5); }
-        to { box-shadow: 0 0 10px rgba(37, 99, 235, 0.8); }
-    }
-
-    @@keyframes inputGlowDark {
-        from { box-shadow: 0 0 5px rgba(59, 130, 246, 0.5); }
-        to { box-shadow: 0 0 10px rgba(59, 130, 246, 0.8); }
-    }
-
-    @@keyframes scrollFade {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-
-    @@keyframes thumbPulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.1); }
-        100% { transform: scale(1); }
-    }
-
-    @@keyframes toggleFade {
-        from { opacity: 0; transform: translateY(-10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    @@keyframes handleBounce {
-        0% { transform: translateX(0); }
-        50% { transform: translateX(1.7rem); }
-        100% { transform: translateX(1.5rem); }
-    }
-
-    @@keyframes navPulse {
-        0% { transform: translateX(5px) scale(1); }
-        50% { transform: translateX(5px) scale(1.05); }
-        100% { transform: translateX(5px) scale(1); }
-    }
-
-    @@keyframes buttonPulse {
-        0% { transform: scale(1.05); }
-        50% { transform: scale(1.08); }
-        100% { transform: scale(1.05); }
-    }
-
-    @@keyframes modalFade {
-        from { opacity: 0; transform: translateY(-20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    @@keyframes errorShake {
-        0%, 100% { transform: translateX(0); }
-        25% { transform: translateX(-5px); }
-        75% { transform: translateX(5px); }
-    }
-
-    @@keyframes cardFade {
-        from { opacity: 0; transform: translateY(30px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
+   
 
     /* Media Query */
     @@media (max-width: 767.98px) {
@@ -1045,3 +765,4 @@
     }
 
 </style>
+

@@ -21,8 +21,8 @@
     <button type="button" class="btn btn-primary" id="create_user">Create User</button>
 </p>
 
-<table class="display table table-hover" id="viewtable" style="width:100%;">
-    <thead class="bg-light text-dark">
+<table class="display responsive" id="servertable" style="width:100%;background-color:black;color:white">
+    <thead>
         <tr style="font-size:14px;">
             <th scope="col">#</th>
             <th scope="col">First Name</th>
@@ -59,11 +59,11 @@
                     <td>@Html.DisplayFor(modelItem => Modelitem.Address)</td>
                     <td>
                         <img src="@Url.Content(Modelitem.ImagePath)"
-                             alt="User Image"
-                             class="img-fluid rounded-circle shadow-sm"
-                             style="width: 40px; height: 40px; object-fit: cover;"
-                             onerror="this.src='/images/default-avatar.png';"
-                             @(string.IsNullOrEmpty(Modelitem.ImagePath) ? "hidden" : "") />
+                        alt="User Image"
+                        class="img-fluid rounded-circle shadow-sm"
+                        style="width: 40px; height: 40px; object-fit: cover;"
+                        onerror="this.src='/images/default-avatar.png';"
+                        @(string.IsNullOrEmpty(Modelitem.ImagePath) ? "hidden" : "") />
                     </td>
                     <td>@Html.DisplayFor(modelItem => Modelitem.SelectedCountry)</td>
                     <td>@Html.DisplayFor(modelItem => Modelitem.selectedState)</td>
@@ -71,21 +71,21 @@
                     <td>
                         <div class="d-flex gap-3 justify-content-center align-items-center">
                             <button type="button"
-                                    class="btn btn-outline-primary btn-sm shadow-sm"
-                                    onclick="edituser(@Modelitem.user_id)"
-                                    title="Edit User">
+                            class="btn btn-outline-primary btn-sm shadow-sm"
+                            onclick="edituser(@Modelitem.user_id)"
+                            title="Edit User">
                                 <i class="fas fa-edit"></i>
                             </button>
                             <button type="button"
-                                    class="btn btn-outline-info btn-sm shadow-sm"
-                                    onclick="detailsUser(@Modelitem.user_id)"
-                                    title="View Details">
+                            class="btn btn-outline-info btn-sm shadow-sm"
+                            onclick="detailsUser(@Modelitem.user_id)"
+                            title="View Details">
                                 <i class="fas fa-info-circle"></i>
                             </button>
                             <button type="button"
-                                    class="btn btn-outline-danger btn-sm shadow-sm"
-                                    onclick="deleteUser(@Modelitem.user_id)"
-                                    title="Delete User">
+                            class="btn btn-outline-danger btn-sm shadow-sm"
+                            onclick="deleteUser(@Modelitem.user_id)"
+                            title="Delete User">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
@@ -113,11 +113,15 @@
             <div class="modal-body">
                 @{
 
-                    using (Html.BeginForm("Index", "Home", FormMethod.Post, new { enctype = "multipart/form-data", id = "CreateNewUser" }))
+                    using (Html.BeginForm("Index", "Home", FormMethod.Post, new { enctype = "multipart/form-data", id = "CreateNewUser", }))
                     {
 
+
                         <div class="container" style="max-width:auto">
-                            <h5 class="modal-title" id="exampleModalLabel">Create User</h5>
+                            <div class="modal-header bg-success" style="color:white;">
+                                <h5 class="modal-title" id="exampleModalLabel">Create User</h5>
+                                <button type="button" class="btn-close" aria-label="Close" onclick="$('#CreateModal').modal('hide')"></button>
+                            </div>
                             <hr />
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
@@ -191,10 +195,10 @@
 
                             <div class="row mb-3">
                                 <div class="col-md-3">
-                                  
+
                                 </div>
                                 <div class="col-md-8">
-                                  
+
                                 </div>
                             </div>
 
@@ -254,11 +258,11 @@
                                 </div>
                                 <div class="col-md-8">
                                     <img id="previewImage" src="" alt="Uploaded Image"
-                                         class="img-thumbnail mb-2"
-                                         style="width: 150px; height: 150px; display: @(string.IsNullOrEmpty(item.ImagePath) ? "none" : "block");" />
+                                    class="img-thumbnail mb-2"
+                                    style="width: 150px; height: 150px; display: @(string.IsNullOrEmpty(item.ImagePath) ? "none" : "block");" />
 
                                     <input type="file" name="file" id="file" class="form-control" required="required"
-                                           accept=".jpg,.jpeg" />
+                                    accept=".jpg,.jpeg" />
                                 </div>
                             </div>
                             <hr />
@@ -281,13 +285,19 @@
 <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-body">
+            <div class="modal-body" >
                 @{
                     using (Html.BeginForm("ViewUser", "Home", FormMethod.Post, new { enctype = "multipart/form-data", id = "EditUserForm" }))
-                    {
+                            {
                         @Html.Hidden("user_id")
                         <div class="container">
-                            <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+
+                            <div class="modal-header bg-warning" style="color:white;">
+                                <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+                                <button type="button" class="btn-close" aria-label="Close" onclick="$('#editUserModal').modal('hide')"></button>
+                            </div>
+
+                           
                             <hr />
 
 
@@ -351,21 +361,21 @@
                             </div>
 
                             <div class="row mb-3">
-                                <label class="control-label">Password</label>
+                                <div class="col-md-3">Password</div>
                                 <div class="col-md-8">
                                     <input type="password" id="editPassword" name="Password" class="form-control" placeholder="Enter Your Password" />
                                 </div>
                             </div>
 
                             <div class="row mb-3">
-                                <label class="control-label">Confirm Password</label>
+                                <div class="col-md-3">Confirm Password</div>
                                 <div class="col-md-8">
                                     <input type="password" id="editConfirmPassword" name="ConfirmPassword" class="form-control" placeholder="Confirm Your Password" />
                                 </div>
                             </div>
 
                             <div class="row mb-3">
-                                <label class="control-label">Address</label>
+                                <div class="col-md-3">Address</div>
                                 <div class="col-md-8">
                                     <textarea id="editAddress" name="Address" class="form-control" placeholder="Enter Your Address"></textarea>
                                 </div>
@@ -430,7 +440,7 @@
 
 <div class="modal fade" id="detail" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-body" style="width: 22rem;">
+        <div class="modal-body" style="width: 22rem; background-color:transparent">
             <div class="card shadow-lg rounded" style="width: 22rem;">
                 <img src="/images/default-avatar.png" class="card-img-top rounded-circle mx-auto d-block mt-3" id="dImage"
                      alt="Profile Image" style="width: 120px; height: 120px; object-fit: cover; border: 4px solid #fff;">
@@ -468,18 +478,26 @@
     <script>
         $(document).ready(function () {
 
-        $('#viewtable').DataTable({
-                "paging": true,
-                "lengthChange": true,
-                 "searching": true,
-                "ordering": true,
-                "paging": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-                "scrollX": true,
-                "fixedHeader": true,
+                $('#servertable').DataTable({
+
+                     "processing": true,
+    "paging": true,
+    "lengthChange": true,
+    "searching": true,
+    "ordering": true,
+    "info": true,
+    "autoWidth": true,
+    "scrollX": true,
+    "scrollY": "80vh", 
+                fixedHeader: true,  
+                responsive: true,
+                "scrollCollapse": true,
+                "fixedColumns": true, // Disable fixedColumns temporarily
                 "stateSave": true,
+                "responsive": true,
+               
+                "fixedHeader": true,
+               
                 "columnDefs": [
                     { "orderable": false, "targets": [12] },
                     { "width": "15%", "targets": 12 },
@@ -510,22 +528,18 @@
                 },
 
                 "initComplete": function () {
-                    $('#viewtable_wrapper').addClass('animate__animated animate__zoomIn');
+                            $('#servertable_wrapper').addClass('animate__animated animate__zoomIn');
             },
-
-            "headerCallback": function (thead, data, start, end, display) {
+           "headerCallback": function (thead) {
                 $(thead).find('th').css({
                     'text-align': 'center',
-                    'background': 'linear-gradient(90deg, #ff6200, #cc4e00)',
+                             'background': 'linear-gradient(90deg, #ff6200, #cc4e00)',
                     'color': '#fff',
                     'text-transform': 'uppercase',
                     'letter-spacing': '1px',
-
-                    'position': 'sticky',
-                    'top': '0',
-                    'z-index': '10'
+                    'padding': '10px'
                 });
-            },
+            }
             });
 
         $("#countryDropdown").change(function () {
@@ -924,4 +938,3 @@
     </script>
 }
 
-<link rel="stylesheet" href="~/App_Data/view.css" />
